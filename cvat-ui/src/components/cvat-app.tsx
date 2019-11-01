@@ -9,6 +9,7 @@ import 'antd/dist/antd.css';
 import '../stylesheet.css';
 
 import TasksPageContainer from '../containers/tasks-page/tasks-page';
+import ProjectsPageContainer from '../containers/projects-page/projects-page';
 import CreateTaskPageContainer from '../containers/create-task-page/create-task-page';
 import TaskPageContainer from '../containers/task-page/task-page';
 import ModelsPageContainer from '../containers/models-page/models-page';
@@ -104,6 +105,7 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
                             <Layout.Content>
                                 <Switch>
                                     <Route exact path='/tasks' component={TasksPageContainer}/>
+                                    <Route exact path='/projects' component={ProjectsPageContainer}/>
                                     <Route exact path='/models' component={ModelsPageContainer}/>
                                     <Route path='/tasks/create' component={CreateTaskPageContainer}/>
                                     <Route path='/tasks/:id' component={TaskPageContainer}/>
