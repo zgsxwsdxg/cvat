@@ -7,7 +7,6 @@
         {
             "type": "chrome",
             "request": "launch",
-            "preLaunchTask": "ui.js: server",
             "name": "ui.js: debug",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}/cvat-ui",
