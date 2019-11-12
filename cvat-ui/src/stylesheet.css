@@ -132,7 +132,9 @@
     transform: rotate(-90deg);
 }
 
-.anticon.cvat-empty-tasks-icon > img {
+.anticon.cvat-empty-tasks-icon > img,
+.anticon.cvat-no-projects-icon > img
+{
     width: 90px;
 }
 

@@ -182,6 +182,62 @@
                 return true;
             }
 
+            async function getProjects(filter = '') {
+                const { backendAPI } = config;
+
+                let response = null;
+                try {
+                    response = await Axios.get(`${backendAPI}/projects?${filter}`, {
+                        proxy: config.proxy,
+                    });
+                } catch (errorData) {
+                    throw generateError(errorData, 'Could not get projects from a server');
+                }
+
+                response.data.results.count = response.data.count;
+                return response.data.results;
+            }
+
+            async function createProject(id, data) {
+                const { backendAPI } = config;
+
+                try {
+                    await Axios.post(`${backendAPI}/projects`, JSON.stringify(data), {
+                        proxy: config.proxy,
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                } catch (errorData) {
+                    throw generateError(errorData, 'Could not post the project on the server');
+                }
+            }
+
+            async function saveProject(id, data) {
+                const { backendAPI } = config;
+
+                try {
+                    await Axios.patch(`${backendAPI}/projects/${id}`, JSON.stringify(data), {
+                        proxy: config.proxy,
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                } catch (errorData) {
+                    throw generateError(errorData, 'Could not save the project on the server');
+                }
+            }
+
+            async function deleteProject(id) {
+                const { backendAPI } = config;
+
+                try {
+                    await Axios.delete(`${backendAPI}/projects/${id}`);
+                } catch (errorData) {
+                    throw generateError(errorData, 'Could not delete the project from the server');
+                }
+            }
+
             async function getTasks(filter = '') {
                 const { backendAPI } = config;
 
@@ -560,6 +616,16 @@
                         logout,
                         authorized,
                         register,
+                    }),
+                    writable: false,
+                },
+
+                projects: {
+                    value: Object.freeze({
+                        getProjects,
+                        saveProject,
+                        createProject,
+                        deleteProject,
                     }),
                     writable: false,
                 },

@@ -10,6 +10,7 @@
 /components/openvino/*.tgz
 /profiles
 /ssh/*
+/yarn.lock
 !/ssh/README.md
 node_modules
 /Mask_RCNN/

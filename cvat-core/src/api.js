@@ -17,7 +17,7 @@ function build() {
     const User = require('./user');
     const ObjectState = require('./object-state');
     const Statistics = require('./statistics');
-    const { Job, Task } = require('./session');
+    const { Job, Task, Project } = require('./session');
     const { Attribute, Label } = require('./labels');
 
     const {
@@ -40,7 +40,7 @@ function build() {
         ServerError,
     } = require('./exceptions');
 
-    const pjson = require('../package.json');
+    const packageJson = require('../package.json');
     const config = require('./config');
 
     /**
@@ -178,6 +178,44 @@ function build() {
                 return result;
             },
         },
+        /**
+            * Namespace is used for getting projects
+            * @namespace projects
+            * @memberof module:API.cvat
+        */
+        projects: {
+            /**
+                * @typedef {Object} ProjectFilter
+                * @property {string} name Check if name contains this value
+                * @property {module:API.cvat.enums.TaskStatus} status
+                * Check if status contains this value
+                * @property {integer} id Check if id equals this value
+                * @property {integer} page Get specific page
+                * (default REST API returns 20 projects per request.
+                * In order to get more, it is need to specify next page)
+                * @property {string} owner Check if owner user contains this value
+                * @property {string} assignee Check if assignee contains this value
+                * @property {string} search Combined search of contains among all fields
+                * @global
+            */
+
+            /**
+                * Method returns list of projects corresponding to a filter
+                * @method get
+                * @async
+                * @memberof module:API.cvat.projects
+                * @param {ProjectFilter} [filter={}] project filter
+                * @returns {module:API.cvat.classes.Project[]}
+                * @throws {module:API.cvat.exceptions.PluginError}
+                * @throws {module:API.cvat.exceptions.ServerError}
+            */
+            async get(filter = {}) {
+                const result = await PluginRegistry
+                    .apiWrapper(cvat.projects.get, filter);
+                return result;
+            },
+        },
+
         /**
             * Namespace is used for getting tasks
             * @namespace tasks
@@ -453,7 +491,7 @@ function build() {
                 * @memberof module:API.cvat.client
                 * @readonly
             */
-            version: `${pjson.version}`,
+            version: `${packageJson.version}`,
         },
         /**
             * Namespace is used for access to enums
@@ -489,6 +527,7 @@ function build() {
             * @memberof module:API.cvat
         */
         classes: {
+            Project,
             Task,
             User,
             Job,
@@ -500,6 +539,7 @@ function build() {
     };
 
     cvat.server = Object.freeze(cvat.server);
+    cvat.projects = Object.freeze(cvat.projects);
     cvat.tasks = Object.freeze(cvat.tasks);
     cvat.jobs = Object.freeze(cvat.jobs);
     cvat.users = Object.freeze(cvat.users);

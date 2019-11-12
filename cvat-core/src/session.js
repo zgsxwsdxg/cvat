@@ -1177,9 +1177,212 @@
         }
     }
 
+    /**
+        * Class representing a project
+        * @memberof module:API.cvat.classes
+        * @extends Session
+    */
+    class Project extends Session {
+        /**
+            * In a fact you need use the constructor only if you want to create a project
+            * @param {object} initialData - Object which is used for initalization
+            * <br> It can contain keys:
+            * <br> <li style="margin-left: 10px;"> name
+            * <br> <li style="margin-left: 10px;"> owner
+            * <br> <li style="margin-left: 10px;"> assignee
+            * <br> <li style="margin-left: 10px;"> bug_tracker
+        */
+        constructor(initialData) {
+            super();
+            const data = {
+                id: undefined,
+                name: undefined,
+                status: undefined,
+                owner: undefined,
+                assignee: undefined,
+                created_date: undefined,
+                updated_date: undefined,
+                bug_tracker: undefined,
+            };
+
+            for (const property in data) {
+                if (Object.prototype.hasOwnProperty.call(data, property)
+                    && property in initialData) {
+                    data[property] = initialData[property];
+                }
+            }
+
+            Object.defineProperties(this, Object.freeze({
+                /**
+                    * @name id
+                    * @type {integer}
+                    * @memberof module:API.cvat.classes.Project
+                    * @readonly
+                    * @instance
+                */
+                id: {
+                    get: () => data.id,
+                },
+                /**
+                    * @name name
+                    * @type {string}
+                    * @memberof module:API.cvat.classes.Project
+                    * @instance
+                    * @throws {module:API.cvat.exceptions.ArgumentError}
+                */
+                name: {
+                    get: () => data.name,
+                    set: (value) => {
+                        if (!value.trim().length) {
+                            throw new ArgumentError(
+                                'Value must not be empty',
+                            );
+                        }
+                        data.name = value;
+                    },
+                },
+                /**
+                    * @name status
+                    * @type {module:API.cvat.enums.TaskStatus}
+                    * @memberof module:API.cvat.classes.Project
+                    * @readonly
+                    * @instance
+                */
+                status: {
+                    get: () => data.status,
+                },
+                /**
+                    * Instance of a user who has created the project
+                    * @name owner
+                    * @type {module:API.cvat.classes.User}
+                    * @memberof module:API.cvat.classes.Project
+                    * @readonly
+                    * @instance
+                */
+                owner: {
+                    get: () => data.owner,
+                },
+                /**
+                    * Instance of a user who is responsible for the project
+                    * @name assignee
+                    * @type {module:API.cvat.classes.User}
+                    * @memberof module:API.cvat.classes.Project
+                    * @instance
+                    * @throws {module:API.cvat.exceptions.ArgumentError}
+                */
+                assignee: {
+                    get: () => data.assignee,
+                    set: (assignee) => {
+                        if (assignee !== null && !(assignee instanceof User)) {
+                            throw new ArgumentError(
+                                'Value must be a user instance',
+                            );
+                        }
+                        data.assignee = assignee;
+                    },
+                },
+                /**
+                    * @name createdDate
+                    * @type {string}
+                    * @memberof module:API.cvat.classes.Project
+                    * @readonly
+                    * @instance
+                */
+                createdDate: {
+                    get: () => data.created_date,
+                },
+                /**
+                    * @name updatedDate
+                    * @type {string}
+                    * @memberof module:API.cvat.classes.Project
+                    * @readonly
+                    * @instance
+                */
+                updatedDate: {
+                    get: () => data.updated_date,
+                },
+                /**
+                    * @name bugTracker
+                    * @type {string}
+                    * @memberof module:API.cvat.classes.Project
+                    * @instance
+                    * @throws {module:API.cvat.exceptions.ArgumentError}
+                */
+                bugTracker: {
+                    get: () => data.bug_tracker,
+                    set: (tracker) => {
+                        data.bug_tracker = tracker;
+                    },
+                },
+            }));
+
+            // When we call a function, for example: task.annotations.get()
+            // In the method get we lose the task context
+            // So, we need return it
+            this.annotations = {
+                get: Object.getPrototypeOf(this).annotations.get.bind(this),
+                put: Object.getPrototypeOf(this).annotations.put.bind(this),
+                save: Object.getPrototypeOf(this).annotations.save.bind(this),
+                dump: Object.getPrototypeOf(this).annotations.dump.bind(this),
+                merge: Object.getPrototypeOf(this).annotations.merge.bind(this),
+                split: Object.getPrototypeOf(this).annotations.split.bind(this),
+                group: Object.getPrototypeOf(this).annotations.group.bind(this),
+                clear: Object.getPrototypeOf(this).annotations.clear.bind(this),
+                upload: Object.getPrototypeOf(this).annotations.upload.bind(this),
+                select: Object.getPrototypeOf(this).annotations.select.bind(this),
+                statistics: Object.getPrototypeOf(this).annotations.statistics.bind(this),
+                hasUnsavedChanges: Object.getPrototypeOf(this)
+                    .annotations.hasUnsavedChanges.bind(this),
+            };
+
+            this.frames = {
+                get: Object.getPrototypeOf(this).frames.get.bind(this),
+                preview: Object.getPrototypeOf(this).frames.preview.bind(this),
+            };
+        }
+
+        /**
+            * Method updates data of a created task or creates new task from scratch
+            * @method save
+            * @returns {module:API.cvat.classes.Task}
+            * @memberof module:API.cvat.classes.Task
+            * @param {function} [onUpdate] - the function which is used only if task hasn't
+            * been created yet. It called in order to notify about creation status.
+            * It receives the string parameter which is a status message
+            * @readonly
+            * @instance
+            * @async
+            * @throws {module:API.cvat.exceptions.ServerError}
+            * @throws {module:API.cvat.exceptions.PluginError}
+        */
+        async save(onUpdate = () => {}) {
+            const result = await PluginRegistry
+                .apiWrapper.call(this, Task.prototype.save, onUpdate);
+            return result;
+        }
+
+        /**
+            * Method deletes a task from a server
+            * @method delete
+            * @memberof module:API.cvat.classes.Task
+            * @readonly
+            * @instance
+            * @async
+            * @throws {module:API.cvat.exceptions.ServerError}
+            * @throws {module:API.cvat.exceptions.PluginError}
+        */
+        async delete() {
+            const result = await PluginRegistry
+                .apiWrapper.call(this, Task.prototype.delete);
+            return result;
+        }
+    }
+
+
     module.exports = {
         Job,
         Task,
+        Project,
     };
 
     const {
@@ -1199,6 +1402,7 @@
 
     buildDublicatedAPI(Job.prototype);
     buildDublicatedAPI(Task.prototype);
+    buildDublicatedAPI(Project.prototype);
 
     Job.prototype.save.implementation = async function () {
         // TODO: Add ability to change an assignee
