@@ -1,3 +1,5 @@
+import { ErrorInfo } from './common';
+
 export interface SearchQuery {
     page: number;
     id: number | null;
@@ -10,8 +12,8 @@ export interface SearchQuery {
 }
 
 export interface State {
-    initialized: boolean;
-    message: string;
+    isInitialized: boolean;
+    error: ErrorInfo | null;
     projects: any[]; // cvat-core instances
-    query: SearchQuery;
+    query: SearchQuery | null;
 }

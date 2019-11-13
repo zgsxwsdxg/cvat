@@ -9,9 +9,10 @@ import 'antd/dist/antd.css';
 import '../stylesheet.css';
 
 import TasksPageContainer from '../containers/tasks-page/tasks-page';
-import ProjectsPageContainer from '../containers/projects-page/projects-page';
+import ProjectListPage from '../pages/project-list';
+import NewProjectPage from '../pages/new-project';
+import ProjectItemPage from '../pages/project-item';
 import CreateTaskPageContainer from '../containers/create-task-page/create-task-page';
-import CreateProjectPageContainer from '../containers/create-project-page/create-project-page';
 import TaskPageContainer from '../containers/task-page/task-page';
 import ModelsPageContainer from '../containers/models-page/models-page';
 import AnnotationPageContainer from '../containers/annotation-page/annotation-page';
@@ -105,11 +106,13 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
                             <HeaderContainer> </HeaderContainer>
                             <Layout.Content>
                                 <Switch>
+                                    <Route exact path='/projects' component={ProjectListPage}/>
+                                    <Route path='/projects/create' component={NewProjectPage}/>
+                                    <Route path='/projects/:id' component={ProjectItemPage}/>
+
                                     <Route exact path='/tasks' component={TasksPageContainer}/>
-                                    <Route exact path='/projects' component={ProjectsPageContainer}/>
                                     <Route exact path='/models' component={ModelsPageContainer}/>
                                     <Route path='/tasks/create' component={CreateTaskPageContainer}/>
-                                    <Route path='/projects/create' component={CreateProjectPageContainer}/>
                                     <Route path='/tasks/:id' component={TaskPageContainer}/>
                                     <Route path='/tasks/:id/jobs/:id' component={AnnotationPageContainer}/>
                                     <Redirect to='/projects'/>

@@ -2,7 +2,7 @@ import { AnyAction, Dispatch, ActionCreator } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { SearchQuery } from '../types/project-list';
 
-import getCore from '../core';
+import getCore from '../../core';
 
 const cvat = getCore();
 

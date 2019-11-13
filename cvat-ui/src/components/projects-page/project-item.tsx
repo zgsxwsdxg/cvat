@@ -17,10 +17,9 @@ import moment from 'moment';
 import ActionsMenu from '../actions-menu/actions-menu';
 
 export interface ProjectItemProps {
-    projectInstance: any;
-    previewImage: string;
+    project: any;
     deleted: boolean;
-    onDeleteProject: (projectInstance: any) => void;
+    onDeleteProject: (project: any) => void;
 }
 
 // TODO: className='cvat-project-item-preview-wrapper'
@@ -37,14 +36,14 @@ class ProjectItemComponent extends React.PureComponent<ProjectItemProps & RouteC
         return (
             <Col span={4}>
                 <div className='cvat-project-item-preview-wrapper'>
-                    <img alt='Preview' className='cvat-project-item-preview' src={this.props.previewImage}/>
+                    <img alt='Preview' className='cvat-project-item-preview' src=''/>
                 </div>
             </Col>
         )
     }
 
     private renderDescription() {
-        const project = this.props.projectInstance;
+        const project = this.props.project;
         const { id } = project;
         const owner = project.owner ? project.owner.username : null;
         const updated = moment(project.updatedDate).fromNow();
@@ -69,7 +68,7 @@ class ProjectItemComponent extends React.PureComponent<ProjectItemProps & RouteC
     }
 
     private renderProgress() {
-        const project = this.props.projectInstance;
+        const project = this.props.project;
         // Count number of jobs and performed jobs
         const numOfTasks = 1; // TODO project.tasks.length;
         const numOfCompleted = 0; // TODO project.tasks.filter(
@@ -114,7 +113,7 @@ class ProjectItemComponent extends React.PureComponent<ProjectItemProps & RouteC
 
     private renderNavigation() {
         const subMenuIcon = () => (<img src='/assets/icon-sub-menu.svg'/>);
-        const { id } = this.props.projectInstance;
+        const { id } = this.props.project;
 
         return (
             <Col span={4}>

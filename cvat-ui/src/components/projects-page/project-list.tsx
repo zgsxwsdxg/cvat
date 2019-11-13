@@ -11,8 +11,7 @@ import ProjectItem from '../../containers/projects-page/project-item';
 export interface ContentListProps {
     onSwitchPage(page: number): void;
     currentProjectsIndexes: number[];
-    currentPage: number;
-    numberOfProjects: number;
+    page: number;
 }
 
 // TODO: className='cvat-project-list'

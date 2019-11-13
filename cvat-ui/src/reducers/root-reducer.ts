@@ -5,7 +5,10 @@ import usersReducer from './users-reducer';
 import formatsReducer from './formats-reducer';
 import pluginsReducer from './plugins-reducer';
 import taskReducer from './task-reducer';
-import getProjectsReducer from './projects-reducer';
+import projectListReducer from '../pages/reducers/project-list';
+import projectItemReducer from '../pages/reducers/project-item';
+import { State as ProjectListState } from '../pages/types/project-list';
+import { State as ProjectItemState } from '../pages/types/project-item';
 
 import {
     AuthState,
@@ -14,13 +17,13 @@ import {
     FormatsState,
     PluginsState,
     TaskState,
-    ProjectsState;
 } from './interfaces';
 
 export interface CombinedState {
     auth: AuthState;
     tasks: TasksState;
-    projects: ProjectsState;
+    projects: ProjectListState;
+    activeProject: ProjectItemState;
     users: UsersState;
     formats: FormatsState;
     plugins: PluginsState;
@@ -31,7 +34,8 @@ export default function createRootReducer(): Reducer {
     return combineReducers({
         auth: authReducer,
         tasks: tasksReducer,
-        projects: getProjectsReducer,
+        activeProject: projectItemReducer,
+        projects: projectListReducer,
         users: usersReducer,
         formats: formatsReducer,
         plugins: pluginsReducer,

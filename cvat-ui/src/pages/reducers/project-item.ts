@@ -4,32 +4,35 @@ import {
     FETCH_PROJECT_SUCCESS,
     FETCH_PROJECT_FAILURE,
     FETCH_PROJECT_REQUEST,
-} from '../actions/project-info';
+} from '../actions/project-item';
 
-import { State } from '../types/project-info';
+import { State } from '../types/project-item';
 
 const defaultState: State = {
-    message: null,
+    isInitialized: false,
+    error: null,
     project: null,
 };
 
 export default function (state = defaultState, action: AnyAction): State {
     switch (action.type) {
         case FETCH_PROJECT_REQUEST:
-            return {
-                project: null,
-                message: null,
-            };
+            return defaultState;
         case FETCH_PROJECT_SUCCESS: {
             return {
-                message: null,
+                isInitialized: true,
+                error: null,
                 project: action.payload.project,
             };
         }
         case FETCH_PROJECT_FAILURE: {
             return {
+                isInitialized: true,
                 project: null,
-                message: action.payload.error,
+                error: {
+                    title: 'Error',
+                    message: action.payload.error,
+                },
             };
         }
         default:
