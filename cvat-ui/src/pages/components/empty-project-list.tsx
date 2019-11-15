@@ -8,14 +8,17 @@ import {
     Icon,
 } from 'antd';
 
-export default function NoProjectsComponent() {
-    const noProjectsIcon = () => (<img src='/assets/no-projects.svg'/>);
+function EmptyProjectListIcon() {
+    return <img src='/assets/empty-project-list.svg'/>;
+}
 
+// TODO: define CSS classes
+export default function EmptyProjectList() {
     return (
-        <div className='cvat-no-projects-page'>
+        <div className='cvat-empty-project-list'>
             <Row type='flex' justify='center' align='middle'>
                 <Col>
-                    <Icon className='cvat-no-projects-icon' component={noProjectsIcon}/>
+                    <Icon className='cvat-empty-project-list-icon' component={EmptyProjectListIcon}/>
                 </Col>
             </Row>
             <Row type='flex' justify='center' align='middle'>
@@ -34,6 +37,5 @@ export default function NoProjectsComponent() {
                 </Col>
             </Row>
         </div>
-
     )
 }
