@@ -1185,7 +1185,7 @@
     class Project extends Session {
         /**
             * In a fact you need use the constructor only if you want to create a project
-            * @param {object} initialData - Object which is used for initalization
+            * @param {object} initialData - Object which is used for initialization
             * <br> It can contain keys:
             * <br> <li style="margin-left: 10px;"> name
             * <br> <li style="margin-left: 10px;"> owner
@@ -1373,7 +1373,7 @@
         */
         async delete() {
             const result = await PluginRegistry
-                .apiWrapper.call(this, Task.prototype.delete);
+                .apiWrapper.call(this, Project.prototype.delete);
             return result;
         }
     }
@@ -1402,7 +1402,6 @@
 
     buildDublicatedAPI(Job.prototype);
     buildDublicatedAPI(Task.prototype);
-    buildDublicatedAPI(Project.prototype);
 
     Job.prototype.save.implementation = async function () {
         // TODO: Add ability to change an assignee
