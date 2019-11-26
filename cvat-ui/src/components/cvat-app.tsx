@@ -15,10 +15,12 @@ import ProjectItemPage from '../pages/project-item';
 import CreateTaskPageContainer from '../containers/create-task-page/create-task-page';
 import TaskPageContainer from '../containers/task-page/task-page';
 import ModelsPageContainer from '../containers/models-page/models-page';
+import CreateModelPageContainer from '../containers/create-model-page/create-model-page';
 import AnnotationPageContainer from '../containers/annotation-page/annotation-page';
 import LoginPageContainer from '../containers/login-page/login-page';
 import RegisterPageContainer from '../containers/register-page/register-page';
 import HeaderContainer from '../containers/header/header';
+import ModelRunnerModalContainer from '../containers/model-runner-dialog/model-runner-dialog';
 
 import FeedbackComponent from './feedback';
 
@@ -34,6 +36,9 @@ type CVATAppProps = {
     gettingAuthError: string;
     gettingFormatsError: string;
     gettingUsersError: string;
+    installedAutoAnnotation: boolean;
+    installedTFAnnotation: boolean;
+    installedTFSegmentation: boolean;
     user: any;
 }
 
@@ -98,7 +103,10 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
         const readyForRender =
             (this.props.userInitialized && this.props.user == null) ||
             (this.props.userInitialized && this.props.formatsInitialized &&
-             this.props.pluginsInitialized &&this.props.usersInitialized);
+             this.props.pluginsInitialized && this.props.usersInitialized);
+
+        const withModels = this.props.installedAutoAnnotation
+            || this.props.installedTFAnnotation || this.props.installedTFSegmentation;
 
         if (readyForRender) {
             if (this.props.user) {
@@ -113,13 +121,17 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
                                     <Route path='/projects/:id' component={ProjectItemPage}/>
 
                                     <Route exact path='/tasks' component={TasksPageContainer}/>
-                                    <Route exact path='/models' component={ModelsPageContainer}/>
                                     <Route path='/tasks/create' component={CreateTaskPageContainer}/>
-                                    <Route path='/tasks/:id' component={TaskPageContainer}/>
+                                    <Route exact path='/tasks/:id' component={TaskPageContainer}/>
                                     <Route path='/tasks/:id/jobs/:id' component={AnnotationPageContainer}/>
-                                    <Redirect to='/projects'/>
+                                    { withModels &&
+                                        <Route exact path='/models' component={ModelsPageContainer}/> }
+                                    { this.props.installedAutoAnnotation &&
+                                        <Route path='/models/create' component={CreateModelPageContainer}/> }
+                                    <Redirect push to='/projects'/>
                                 </Switch>
                                 <FeedbackComponent/>
+                                <ModelRunnerModalContainer/>
                             </Layout.Content>
                         </Layout>
                     </BrowserRouter>
