@@ -2,6 +2,7 @@ import { combineReducers, Reducer } from 'redux';
 import authReducer from './auth-reducer';
 import tasksReducer from './tasks-reducer';
 import usersReducer from './users-reducer';
+import shareReducer from './share-reducer';
 import formatsReducer from './formats-reducer';
 import pluginsReducer from './plugins-reducer';
 import taskReducer from './task-reducer';
@@ -14,6 +15,7 @@ import {
     AuthState,
     TasksState,
     UsersState,
+    ShareState,
     FormatsState,
     PluginsState,
     TaskState,
@@ -25,6 +27,7 @@ export interface CombinedState {
     projects: ProjectListState;
     activeProject: ProjectItemState;
     users: UsersState;
+    share: ShareState;
     formats: FormatsState;
     plugins: PluginsState;
     activeTask: TaskState;
@@ -37,6 +40,7 @@ export default function createRootReducer(): Reducer {
         activeProject: projectItemReducer,
         projects: projectListReducer,
         users: usersReducer,
+        share: shareReducer,
         formats: formatsReducer,
         plugins: pluginsReducer,
         activeTask: taskReducer,
