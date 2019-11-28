@@ -8,6 +8,7 @@ import pluginsReducer from './plugins-reducer';
 import projectListReducer from '../pages/reducers/project-list';
 import projectItemReducer from '../pages/reducers/project-item';
 import modelsReducer from './models-reducer';
+import notificationsReducer from './notifications-reducer';
 
 export default function createRootReducer(): Reducer {
     return combineReducers({
@@ -20,5 +21,6 @@ export default function createRootReducer(): Reducer {
         formats: formatsReducer,
         plugins: pluginsReducer,
         models: modelsReducer,
+        notifications: notificationsReducer,
     });
 }
