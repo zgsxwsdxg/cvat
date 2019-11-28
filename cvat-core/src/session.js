@@ -665,7 +665,7 @@
     class Task extends Session {
     /**
         * In a fact you need use the constructor only if you want to create a task
-        * @param {object} initialData - Object which is used for initalization
+        * @param {object} initialData - Object which is used for initialization
         * <br> It can contain keys:
         * <br> <li style="margin-left: 10px;"> name
         * <br> <li style="margin-left: 10px;"> assignee
@@ -1180,9 +1180,8 @@
     /**
         * Class representing a project
         * @memberof module:API.cvat.classes
-        * @extends Session
     */
-    class Project extends Session {
+    class Project {
         /**
             * In a fact you need use the constructor only if you want to create a project
             * @param {object} initialData - Object which is used for initialization
@@ -1193,7 +1192,6 @@
             * <br> <li style="margin-left: 10px;"> bug_tracker
         */
         constructor(initialData) {
-            super();
             const data = {
                 id: undefined,
                 name: undefined,
@@ -1315,56 +1313,29 @@
                     },
                 },
             }));
-
-            // When we call a function, for example: task.annotations.get()
-            // In the method get we lose the task context
-            // So, we need return it
-            this.annotations = {
-                get: Object.getPrototypeOf(this).annotations.get.bind(this),
-                put: Object.getPrototypeOf(this).annotations.put.bind(this),
-                save: Object.getPrototypeOf(this).annotations.save.bind(this),
-                dump: Object.getPrototypeOf(this).annotations.dump.bind(this),
-                merge: Object.getPrototypeOf(this).annotations.merge.bind(this),
-                split: Object.getPrototypeOf(this).annotations.split.bind(this),
-                group: Object.getPrototypeOf(this).annotations.group.bind(this),
-                clear: Object.getPrototypeOf(this).annotations.clear.bind(this),
-                upload: Object.getPrototypeOf(this).annotations.upload.bind(this),
-                select: Object.getPrototypeOf(this).annotations.select.bind(this),
-                statistics: Object.getPrototypeOf(this).annotations.statistics.bind(this),
-                hasUnsavedChanges: Object.getPrototypeOf(this)
-                    .annotations.hasUnsavedChanges.bind(this),
-            };
-
-            this.frames = {
-                get: Object.getPrototypeOf(this).frames.get.bind(this),
-                preview: Object.getPrototypeOf(this).frames.preview.bind(this),
-            };
         }
 
         /**
-            * Method updates data of a created task or creates new task from scratch
+            * Save the project on a server
             * @method save
-            * @returns {module:API.cvat.classes.Task}
-            * @memberof module:API.cvat.classes.Task
-            * @param {function} [onUpdate] - the function which is used only if task hasn't
-            * been created yet. It called in order to notify about creation status.
-            * It receives the string parameter which is a status message
+            * @returns {module:API.cvat.classes.Project}
+            * @memberof module:API.cvat.classes.Project
             * @readonly
             * @instance
             * @async
             * @throws {module:API.cvat.exceptions.ServerError}
             * @throws {module:API.cvat.exceptions.PluginError}
         */
-        async save(onUpdate = () => {}) {
+        async save() {
             const result = await PluginRegistry
-                .apiWrapper.call(this, Task.prototype.save, onUpdate);
+                .apiWrapper.call(this, Project.prototype.save);
             return result;
         }
 
         /**
-            * Method deletes a task from a server
+            * Delete the project from a server
             * @method delete
-            * @memberof module:API.cvat.classes.Task
+            * @memberof module:API.cvat.classes.Project
             * @readonly
             * @instance
             * @async
@@ -1378,6 +1349,37 @@
         }
     }
 
+    Project.prototype.save.implementation = async function () {
+        // TODO: Add ability to change an owner and an assignee
+        if (typeof (this.id) !== 'undefined') {
+            // If the task has been already created, we update it
+            const data = {
+                owner: this.owner ? this.owner.id : null,
+                assignee: this.assignee ? this.assignee.id : null,
+                name: this.name,
+                bug_tracker: this.bugTracker,
+            };
+
+            await serverProxy.projects.save(this.id, data);
+            return this;
+        }
+
+        const data = {
+            name: this.name,
+        };
+
+        if (typeof (this.bugTracker) !== 'undefined') {
+            data.bug_tracker = this.bugTracker;
+        }
+
+        const project = await serverProxy.projects.create(data, onUpdate);
+        return new Project(project);
+    };
+
+    Project.prototype.delete.implementation = async function () {
+        const result = await serverProxy.projects.delete(this.id);
+        return result;
+    };
 
     module.exports = {
         Job,

@@ -634,10 +634,10 @@
 
                 projects: {
                     value: Object.freeze({
-                        getProjects,
-                        saveProject,
-                        createProject,
-                        deleteProject,
+                        create: createProject,
+                        delete: deleteProject,
+                        get: getProjects,
+                        save: saveProject,
                     }),
                     writable: false,
                 },
