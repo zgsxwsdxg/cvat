@@ -1,5 +1,6 @@
 import { AnyAction } from 'redux';
 import { TasksActionTypes } from '../actions/tasks-actions';
+import { AuthActionTypes } from '../actions/auth-actions';
 
 import { TasksState, Task } from './interfaces';
 
@@ -378,10 +379,10 @@ export default (state: TasksState = defaultState, action: AnyAction): TasksState
             return {
                 ...state,
                 current: state.current.map((task): Task => {
-                    if (task.instance.id === action.payload.taskInstance.id) {
+                    if (task.instance.id === action.payload.task.id) {
                         return {
                             ...task,
-                            instance: action.payload.taskInstance,
+                            instance: action.payload.task,
                         };
                     }
 
@@ -393,16 +394,21 @@ export default (state: TasksState = defaultState, action: AnyAction): TasksState
             return {
                 ...state,
                 current: state.current.map((task): Task => {
-                    if (task.instance.id === action.payload.taskInstance.id) {
+                    if (task.instance.id === action.payload.task.id) {
                         return {
                             ...task,
-                            instance: action.payload.taskInstance,
+                            instance: action.payload.task,
                         };
                     }
 
                     return task;
                 }),
             };
+        }
+        case AuthActionTypes.LOGOUT_SUCCESS: {
+            return {
+                ...defaultState,
+            }
         }
         default:
             return state;

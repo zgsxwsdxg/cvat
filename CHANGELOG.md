@@ -20,7 +20,8 @@ https://github.com/opencv/cvat/issues/750).
 - Text Detection Auto Annoation Script in OpenVINO format for version 4
 
 ### Changed
--
+- page_size parameter for all REST API methods
+- React & Redux & Antd based dashboard
 
 ### Deprecated
 -

@@ -1,5 +1,6 @@
 export interface AuthState {
     initialized: boolean;
+    fetching: boolean;
     user: any;
 }
 
@@ -145,38 +146,44 @@ export interface ModelFiles {
     json: string | File;
 }
 
+export interface ErrorState {
+    message: string,
+    reason: string,
+}
+
 export interface NotificationsState {
     errors: {
         auth: {
-            authorized: any;
-            login: any;
-            logout: any;
-            register: any;
+            authorized: null | ErrorState;
+            login: null | ErrorState;
+            logout: null | ErrorState;
+            register: null | ErrorState;
         };
         tasks: {
-            fetching: any;
-            updating: any;
-            dumping: any;
-            loading: any;
-            exporting: any;
-            deleting: any;
-            creating: any;
+            fetching: null | ErrorState;
+            updating: null | ErrorState;
+            dumping: null | ErrorState;
+            loading: null | ErrorState;
+            exporting: null | ErrorState;
+            deleting: null | ErrorState;
+            creating: null | ErrorState;
         };
         formats: {
-            fetching: any;
+            fetching: null | ErrorState;
         };
         users: {
-            fetching: any;
+            fetching: null | ErrorState;
         };
         share: {
-            fetching: any;
+            fetching: null | ErrorState;
         };
         models: {
-            creating: any;
-            starting: any;
-            fetching: any;
-            deleting: any;
-            inferenceStatusFetching: any;
+            creating: null | ErrorState;
+            starting: null | ErrorState;
+            deleting: null | ErrorState;
+            fetching: null | ErrorState;
+            metaFetching: null | ErrorState;
+            inferenceStatusFetching: null | ErrorState;
         };
     };
     messages: {

@@ -39,8 +39,9 @@ const defaultState: NotificationsState = {
         models: {
             creating: null,
             starting: null,
-            fetching: null,
             deleting: null,
+            fetching: null,
+            metaFetching: null,
             inferenceStatusFetching: null,
         },
     },
@@ -63,7 +64,10 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...state.errors,
                     auth: {
                         ...state.errors.auth,
-                        authorized: action.payload.error,
+                        authorized: {
+                            message: 'Could not check authorization on the server',
+                            reason: action.payload.error.toString(),
+                        }
                     },
                 },
             };
@@ -75,7 +79,10 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...state.errors,
                     auth: {
                         ...state.errors.auth,
-                        login: action.payload.error,
+                        login: {
+                            message: 'Could not login on the server',
+                            reason: action.payload.error.toString(),
+                        }
                     },
                 },
             };
@@ -87,7 +94,10 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...state.errors,
                     auth: {
                         ...state.errors.auth,
-                        logout: action.payload.error,
+                        logout: {
+                            message: 'Could not logout from the server',
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
@@ -99,19 +109,27 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...state.errors,
                     auth: {
                         ...state.errors.auth,
-                        register: action.payload.error,
+                        register: {
+                            message: 'Could not register on the server',
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
         }
         case TasksActionTypes.EXPORT_DATASET_FAILED: {
+            const taskID = action.payload.task.id;
             return {
                 ...state,
                 errors: {
                     ...state.errors,
                     tasks: {
                         ...state.errors.tasks,
-                        exporting: action.payload.error,
+                        exporting: {
+                            message: 'Could not export dataset for the '
+                                + `<a href="/tasks/${taskID}" target="_blank">task ${taskID}</a>`,
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
@@ -123,68 +141,92 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...state.errors,
                     tasks: {
                         ...state.errors.tasks,
-                        fetching: action.payload.error,
+                        fetching: {
+                            message: 'Could not fetch tasks',
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
         }
         case TasksActionTypes.LOAD_ANNOTATIONS_FAILED: {
+            const taskID = action.payload.task.id;
             return {
                 ...state,
                 errors: {
                     ...state.errors,
                     tasks: {
                         ...state.errors.tasks,
-                        loading: action.payload.error,
+                        loading: {
+                            message: 'Could not upload annotation for the '
+                                + `<a href="/tasks/${taskID}" target="_blank">task ${taskID}</a>`,
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
         }
         case TasksActionTypes.LOAD_ANNOTATIONS_SUCCESS: {
-            const { task } = action.payload;
+            const taskID = action.payload.task.id;
             return {
                 ...state,
                 messages: {
                     ...state.messages,
                     tasks: {
                         ...state.messages.tasks,
-                        loadingDone: `Annotations have been loaded to the task ${task.id}`,
+                        loadingDone: 'Annotations have been loaded to the '
+                            + `<a href="/tasks/${taskID}" target="_blank">task ${taskID}</a>`,
                     },
                 },
             };
         }
         case TasksActionTypes.UPDATE_TASK_FAILED: {
+            const taskID = action.payload.task.id;
             return {
                 ...state,
                 errors: {
                     ...state.errors,
                     tasks: {
                         ...state.errors.tasks,
-                        updating: action.payload.error,
+                        updating: {
+                            message: 'Could not update '
+                                + `<a href="/tasks/${taskID}" target="_blank">task ${taskID}</a>`,
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
         }
         case TasksActionTypes.DUMP_ANNOTATIONS_FAILED: {
+            const taskID = action.payload.task.id;
             return {
                 ...state,
                 errors: {
                     ...state.errors,
                     tasks: {
                         ...state.errors.tasks,
-                        dumping: action.payload.error,
+                        dumping: {
+                            message: 'Could not dump annotations for the '
+                                + `<a href="/tasks/${taskID}" target="_blank">task ${taskID}</a>`,
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
         }
         case TasksActionTypes.DELETE_TASK_FAILED: {
+            const { taskID } = action.payload;
             return {
                 ...state,
                 errors: {
                     ...state.errors,
                     tasks: {
                         ...state.errors.tasks,
-                        deleting: action.payload.error,
+                        deleting: {
+                            message: 'Could not delete the '
+                                + `<a href="/tasks/${taskID}" target="_blank">task ${taskID}</a>`,
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
@@ -196,7 +238,10 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...state.errors,
                     tasks: {
                         ...state.errors.tasks,
-                        creating: action.payload.error,
+                        creating: {
+                            message: 'Could not create the task',
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
@@ -208,7 +253,10 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...state.errors,
                     formats: {
                         ...state.errors.formats,
-                        fetching: action.payload.error,
+                        fetching: {
+                            message: 'Could not get formats from the server',
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
@@ -220,7 +268,10 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...state.errors,
                     users: {
                         ...state.errors.users,
-                        fetching: action.payload.error,
+                        fetching: {
+                            message: 'Could not get users from the server',
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
@@ -232,7 +283,10 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...state.errors,
                     share: {
                         ...state.errors.share,
-                        fetching: action.payload.error,
+                        fetching: {
+                            message: 'Could not load share data from the server',
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
@@ -244,7 +298,10 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...state.errors,
                     models: {
                         ...state.errors.models,
-                        creating: action.payload.error,
+                        creating: {
+                            message: 'Could not create the model',
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
@@ -256,20 +313,25 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...state.errors,
                     models: {
                         ...state.errors.models,
-                        deleting: action.payload.error,
+                        deleting: {
+                            message: 'Could not delete the model',
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
         }
         case ModelsActionTypes.GET_INFERENCE_STATUS_SUCCESS: {
             if (action.payload.activeInference.status === 'finished') {
+                const taskID = action.payload.taskID;
                 return {
                     ...state,
                     messages: {
                         ...state.messages,
                         models: {
                             ...state.messages.models,
-                            inferenceDone: `Automatic annotation finished for the task ${action.payload.taskID}`,
+                            inferenceDone: 'Automatic annotation finished for the '
+                                + `<a href="/tasks/${taskID}" target="_blank">task ${taskID}</a>`,
                         },
                     },
                 };
@@ -279,14 +341,34 @@ export default function (state = defaultState, action: AnyAction): Notifications
                 ...state,
             };
         }
-        case ModelsActionTypes.GET_INFERENCE_STATUS_FAILED: {
+        case ModelsActionTypes.FETCH_META_FAILED: {
             return {
                 ...state,
                 errors: {
                     ...state.errors,
                     models: {
                         ...state.errors.models,
-                        inferenceStatusFetching: action.payload.error,
+                        metaFetching: {
+                            message: 'Could not fetch models meta information',
+                            reason: action.payload.error.toString(),
+                        }
+                    },
+                },
+            };
+        }
+        case ModelsActionTypes.GET_INFERENCE_STATUS_FAILED: {
+            const { taskID } = action.payload;
+            return {
+                ...state,
+                errors: {
+                    ...state.errors,
+                    models: {
+                        ...state.errors.models,
+                        inferenceStatusFetching: {
+                            message: 'Could not fetch inference status for the '
+                                + `<a href="/tasks/${taskID}" target="_blank">task ${taskID}</a>`,
+                            reason: action.payload.error.toString(),
+                        }
                     },
                 },
             };
@@ -298,19 +380,27 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...state.errors,
                     models: {
                         ...state.errors.models,
-                        fetching: action.payload.error,
+                        fetching: {
+                            message: 'Could not get models from the server',
+                            reason: action.payload.error.toString(),
+                        },
                     },
                 },
             };
         }
         case ModelsActionTypes.INFER_MODEL_FAILED: {
+            const { taskID } = action.payload;
             return {
                 ...state,
                 errors: {
                     ...state.errors,
                     models: {
                         ...state.errors.models,
-                        starting: action.payload.error,
+                        starting: {
+                            message: 'Could not infer model for the '
+                                + `<a href="/tasks/${taskID}" target="_blank">task ${taskID}</a>`,
+                            reason: action.payload.error.toString(),
+                        }
                     },
                 },
             };
@@ -330,6 +420,11 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     ...defaultState.messages,
                 },
             };
+        }
+        case AuthActionTypes.LOGOUT_SUCCESS: {
+            return {
+                ...defaultState,
+            }
         }
         default: {
             return {
