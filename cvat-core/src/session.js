@@ -1224,10 +1224,9 @@
                 bug_tracker: undefined,
             };
 
-            for (const property in data) {
-                if (Object.prototype.hasOwnProperty.call(data, property)
-                    && property in initialData) {
-                    data[property] = initialData[property];
+            for (const prop in initialData) {
+                if (Object.prototype.hasOwnProperty.call(data, prop)) {
+                    data[prop] = initialData[prop];
                 }
             }
 

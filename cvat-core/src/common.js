@@ -40,7 +40,7 @@
             if (Object.prototype.hasOwnProperty.call(filter, prop)) {
                 if (!(prop in fields)) {
                     throw new ArgumentError(
-                        `Unsupported filter property has been recieved: "${prop}"`,
+                        `Unsupported filter property has been received: "${prop}"`,
                     );
                 } else if (!fields[prop](filter[prop])) {
                     throw new ArgumentError(

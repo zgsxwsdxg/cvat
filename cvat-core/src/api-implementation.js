@@ -29,7 +29,7 @@
     const User = require('./user');
     const { AnnotationFormat } = require('./annotation-format.js');
     const { ArgumentError } = require('./exceptions');
-    const { Task } = require('./session');
+    const { Task, Project } = require('./session');
 
     function attachUsers(task, users) {
         if (task.assignee !== null) {
@@ -203,6 +203,47 @@
             tasks.count = tasksData.count;
 
             return tasks;
+        };
+
+        cvat.projects.get.implementation = async (filter) => {
+            checkFilter(filter, {
+                page: isInteger,
+                name: isString,
+                id: isInteger,
+                owner: isString,
+                assignee: isString,
+                search: isString,
+                status: isEnum.bind(TaskStatus),
+            });
+
+            if ('search' in filter && Object.keys(filter).length > 1) {
+                if (!('page' in filter && Object.keys(filter).length === 2)) {
+                    throw new ArgumentError(
+                        'Do not use the filter field "search" with others',
+                    );
+                }
+            }
+
+            if ('id' in filter && Object.keys(filter).length > 1) {
+                if (!('page' in filter && Object.keys(filter).length === 2)) {
+                    throw new ArgumentError(
+                        'Do not use the filter field "id" with others',
+                    );
+                }
+            }
+
+            const searchParams = new URLSearchParams();
+            for (const field of ['name', 'owner', 'assignee', 'search', 'status', 'id', 'page']) {
+                if (Object.prototype.hasOwnProperty.call(filter, field)) {
+                    searchParams.set(field, filter[field]);
+                }
+            }
+
+            const data = await serverProxy.projects.get(searchParams.toString());
+            const projects = data.map((entry) => new Project(entry));
+            projects.count = data.count;
+
+            return projects;
         };
 
         return cvat;
