@@ -40,6 +40,9 @@ function HeaderContainer(props: Props) {
             <div className='cvat-left-header'>
                 <Icon className='cvat-logo-icon' component={cvatLogo}/>
 
+                <Button className='cvat-header-button' type='link' value='projects' onClick={
+                    () => props.history.push('/projects')
+                }> Projects </Button>
                 <Button className='cvat-header-button' type='link' value='tasks' onClick={
                     () => props.history.push('/tasks')
                 }> Tasks </Button>
