@@ -240,6 +240,18 @@
             }
 
             const data = await serverProxy.projects.get(searchParams.toString());
+            const users = (await serverProxy.users.getUsers())
+                .map((userData) => new User(userData));
+            data.forEach((el) => {
+                if (el.owner !== null) {
+                    [el.owner] = users.filter((user) => user.id === el.owner);
+                }
+
+                if (el.assignee !== null) {
+                    [el.assignee] = users.filter((user) => user.id === el.assignee);
+                }
+            });
+
             const projects = data.map((entry) => new Project(entry));
             projects.count = data.count;
 

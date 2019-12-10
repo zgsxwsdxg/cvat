@@ -21,6 +21,8 @@ const {
     frameMetaDummyData,
 } = require('./dummy-data.mock');
 
+const User = require('../../src/user');
+
 function QueryStringToJSON(query) {
     const pairs = [...new URLSearchParams(query).entries()];
 
@@ -146,25 +148,6 @@ class ServerProxy {
             }
         }
 
-        async function getProjects(filter = '') {
-            // Emulation of a query filter
-            const queries = QueryStringToJSON(filter);
-            const result = projectsDummyData.results.filter((el) => {
-                for (const key in queries) {
-                    if (Object.prototype.hasOwnProperty.call(queries, key)) {
-                        // TODO: Particular match for some fields is not checked
-                        if (queries[key] !== el[key]) {
-                            return false;
-                        }
-                    }
-                }
-
-                return true;
-            });
-
-            return result;
-        }
-
         async function createProject(data) {
             const id = Math.max(...projectsDummyData.results.map((el) => el.id)) + 1;
             projectsDummyData.results.push({
@@ -242,6 +225,37 @@ class ServerProxy {
 
         async function getUsers() {
             return JSON.parse(JSON.stringify(usersDummyData)).results;
+        }
+
+        async function getProjects(filter = '') {
+            // Emulation of a query filter
+            const queries = QueryStringToJSON(filter);
+            const data = JSON.parse(JSON.stringify(projectsDummyData)).results;
+            const users = await getUsers();
+            const results = data.filter((el) => {
+                for (const key in queries) {
+                    if (Object.prototype.hasOwnProperty.call(queries, key)) {
+                        // TODO: Particular match for some fields is not checked
+                        let value;
+                        if (key === 'owner' || key === 'assignee') {
+                            [value] = users.filter((user) => user.id === el[key]);
+                            if (value) {
+                                value = value.username;
+                            }
+                        } else {
+                            value = el[key];
+                        }
+
+                        if (queries[key] !== value) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            });
+
+            return results;
         }
 
         async function getSelf() {

@@ -64,7 +64,7 @@ describe('Feature: get a list of projects', () => {
         expect(result).toHaveLength(3);
         for (const el of result) {
             expect(el).toBeInstanceOf(Project);
-            expect(el.owner).toBe('admin');
+            expect(el.owner.username).toBe('admin');
         }
     });
 
