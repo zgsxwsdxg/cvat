@@ -18,10 +18,12 @@ https://github.com/opencv/cvat/issues/750).
 - REST API to export an annotation task (images + annotations)
 - Datumaro is an experimental framework to build, analyze, debug and visualize datasets for DL algorithms
 - Text Detection Auto Annoation Script in OpenVINO format for version 4
+- Added in OpenVINO Semantic Segmentation for roads
 
 ### Changed
 - page_size parameter for all REST API methods
 - React & Redux & Antd based dashboard
+- Yolov3 interpretation script fix and changes to mapping.json
 
 ### Deprecated
 -
