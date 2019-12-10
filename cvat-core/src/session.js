@@ -1392,7 +1392,7 @@
             data.bug_tracker = this.bugTracker;
         }
 
-        const project = await serverProxy.projects.create(data, onUpdate);
+        const project = await serverProxy.projects.create(data);
         return new Project(project);
     };
 

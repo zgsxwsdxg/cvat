@@ -177,7 +177,8 @@
             "program": "${workspaceFolder}/cvat-core/node_modules/.bin/jest",
             "args": [
               "--config",
-              "${workspaceFolder}/cvat-core/jest.config.js"
+              "${workspaceFolder}/cvat-core/jest.config.js",
+              "--runInBand"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

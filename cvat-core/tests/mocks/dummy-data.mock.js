@@ -1420,6 +1420,91 @@ const tasksDummyData = {
     ]
 }
 
+const projectsDummyData = {
+    "count": 7,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "url": "http://localhost:7000/api/v1/projects/7",
+            "id": 7,
+            "name": "My test project #1",
+            "owner": 8,
+            "assignee": null,
+            "bug_tracker": "",
+            "created_date": "2019-10-07T10:15:41.168289Z",
+            "updated_date": "2019-10-07T10:15:41.168350Z",
+            "status": "annotation"
+        },
+        {
+            "url": "http://localhost:7000/api/v1/projects/6",
+            "id": 6,
+            "name": "My first project",
+            "owner": 8,
+            "assignee": null,
+            "bug_tracker": "",
+            "created_date": "2019-10-07T10:15:13.671057Z",
+            "updated_date": "2019-10-07T10:15:13.671116Z",
+            "status": "annotation"
+        },
+        {
+            "url": "http://localhost:7000/api/v1/projects/5",
+            "id": 5,
+            "name": "My second project",
+            "owner": null,
+            "assignee": null,
+            "bug_tracker": "",
+            "created_date": "2019-10-07T10:14:45.645482Z",
+            "updated_date": "2019-10-07T10:14:45.645555Z",
+            "status": "annotation"
+        },
+        {
+            "url": "http://localhost:7000/api/v1/projects/4",
+            "id": 4,
+            "name": "My third project",
+            "owner": null,
+            "assignee": null,
+            "bug_tracker": "",
+            "created_date": "2019-10-07T10:14:35.694084Z",
+            "updated_date": "2019-10-07T10:14:35.694162Z",
+            "status": "annotation"
+        },
+        {
+            "url": "http://localhost:7000/api/v1/projects/3",
+            "id": 3,
+            "name": "My project #4",
+            "owner": 1,
+            "assignee": null,
+            "bug_tracker": "",
+            "created_date": "2019-10-07T10:14:10.569942Z",
+            "updated_date": "2019-10-07T10:14:10.570005Z",
+            "status": "annotation"
+        },
+        {
+            "url": "http://localhost:7000/api/v1/projects/2",
+            "id": 2,
+            "name": "My first project",
+            "owner": 1,
+            "assignee": null,
+            "bug_tracker": "",
+            "created_date": "2019-10-07T10:13:46.516397Z",
+            "updated_date": "2019-10-07T10:13:46.516457Z",
+            "status": "annotation"
+        },
+        {
+            "url": "http://localhost:7000/api/v1/projects/1",
+            "id": 1,
+            "name": "Test Project",
+            "owner": 1,
+            "assignee": 8,
+            "bug_tracker": "",
+            "created_date": "2019-10-04T08:39:54.704074Z",
+            "updated_date": "2019-10-04T08:39:54.704136Z",
+            "status": "annotation"
+        }
+    ]
+}
+
 const taskAnnotationsDummyData = {
     '112': {
         "version":21,
@@ -2598,6 +2683,7 @@ const frameMetaDummyData = {
 
 module.exports = {
     tasksDummyData,
+    projectsDummyData,
     aboutDummyData,
     shareDummyData,
     usersDummyData,

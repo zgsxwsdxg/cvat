@@ -11,6 +11,7 @@
 
 const {
     tasksDummyData,
+    projectsDummyData,
     aboutDummyData,
     formatsDummyData,
     shareDummyData,
@@ -19,6 +20,23 @@ const {
     jobAnnotationsDummyData,
     frameMetaDummyData,
 } = require('./dummy-data.mock');
+
+function QueryStringToJSON(query) {
+    const pairs = [...new URLSearchParams(query).entries()];
+
+    const result = {};
+    for (const pair of pairs) {
+        const [key, value] = pair;
+        if (['id'].includes(key)) {
+            result[key] = +value;
+        } else {
+            result[key] = value;
+        }
+    }
+
+    return JSON.parse(JSON.stringify(result));
+}
+
 
 class ServerProxy {
     constructor() {
@@ -66,22 +84,6 @@ class ServerProxy {
         }
 
         async function getTasks(filter = '') {
-            function QueryStringToJSON(query) {
-                const pairs = [...new URLSearchParams(query).entries()];
-
-                const result = {};
-                for (const pair of pairs) {
-                    const [key, value] = pair;
-                    if (['id'].includes(key)) {
-                        result[key] = +value;
-                    } else {
-                        result[key] = value;
-                    }
-                }
-
-                return JSON.parse(JSON.stringify(result));
-            }
-
             // Emulation of a query filter
             const queries = QueryStringToJSON(filter);
             const result = tasksDummyData.results.filter((x) => {
@@ -141,6 +143,60 @@ class ServerProxy {
             const task = tasks.filter(el => el.id === id)[0];
             if (task) {
                 tasks.splice(tasks.indexOf(task), 1);
+            }
+        }
+
+        async function getProjects(filter = '') {
+            // Emulation of a query filter
+            const queries = QueryStringToJSON(filter);
+            const result = projectsDummyData.results.filter((el) => {
+                for (const key in queries) {
+                    if (Object.prototype.hasOwnProperty.call(queries, key)) {
+                        // TODO: Particular match for some fields is not checked
+                        if (queries[key] !== el[key]) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            });
+
+            return result;
+        }
+
+        async function createProject(data) {
+            const id = Math.max(...projectsDummyData.results.map((el) => el.id)) + 1;
+            projectsDummyData.results.push({
+                url: `http://localhost:7000/api/v1/projects/${id}`,
+                id,
+                name: data.name,
+                owner: 8,
+                assignee: null,
+                bug_tracker: '',
+                created_date: '2019-10-07T10:15:41.168289Z',
+                updated_date: '2019-10-07T10:15:41.168350Z',
+                status: 'annotation',
+            });
+
+            const createdProject = await getProjects(`?id=${id}`);
+            return createdProject[0];
+        }
+
+        async function saveProject(id, data) {
+            const object = projectsDummyData.results.filter((el) => el.id === id)[0];
+            for (const prop in object) {
+                if (Object.prototype.hasOwnProperty.call(data, prop)) {
+                    object[prop] = data[prop];
+                }
+            }
+        }
+
+        async function deleteProject(id) {
+            const projects = projectsDummyData.results;
+            const project = projects.filter((el) => el.id === id)[0];
+            if (project) {
+                projects.splice(projects.indexOf(project), 1);
             }
         }
 

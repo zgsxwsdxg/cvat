@@ -26,7 +26,7 @@ describe('Feature: get a list of projects', () => {
     test('get all projects', async () => {
         const result = await window.cvat.projects.get();
         expect(Array.isArray(result)).toBeTruthy();
-        expect(result).toHaveLength(6);
+        expect(result).toHaveLength(7);
         for (const el of result) {
             expect(el).toBeInstanceOf(Project);
         }
@@ -74,9 +74,8 @@ describe('Feature: get a list of projects', () => {
         })).rejects.toThrow(window.cvat.exceptions.ArgumentError);
     });
 
-    test('get project by name, status and owner', async () => {
+    test('get project by name, status', async () => {
         const result = await window.cvat.projects.get({
-            owner: 'admin',
             status: 'annotation',
             name: 'Test Project',
         });
@@ -84,7 +83,6 @@ describe('Feature: get a list of projects', () => {
         expect(result).toHaveLength(1);
         for (const el of result) {
             expect(el).toBeInstanceOf(Project);
-            expect(el.owner).toBe('admin');
             expect(el.status).toBe('annotation');
             expect(el.name).toBe('Test Project');
         }
