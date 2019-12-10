@@ -437,6 +437,12 @@
     background: white;
 }
 
+.cvat-task-job-list > div:nth-child(1) > div:nth-child(1) {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
 .cvat-task-top-bar {
     margin-top: 20px;
     margin-bottom: 10px;
@@ -592,6 +598,8 @@ textarea.ant-input.cvat-raw-labels-viewer {
 
 .ant-typography.cvat-jobs-header {
     margin-bottom: 0px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 /* Pagination in center */
