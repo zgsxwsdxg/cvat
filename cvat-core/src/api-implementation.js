@@ -29,24 +29,45 @@
     const User = require('./user');
     const { AnnotationFormat } = require('./annotation-format.js');
     const { ArgumentError } = require('./exceptions');
-    const { Task, Project } = require('./session');
+    const { Task } = require('./session');
+    const Project = require('./project');
+
+    async function getProjects(users) {
+        const projects = (await serverProxy.projects.get({ page_size: 'all' }))
+            .map((data) => {
+                data.owner = users[data.owner] || null;
+                data.assignee = users[data.assignee] || null;
+                return data;
+            }).map((data) => new Project(data))
+            .reduce((map, obj) => {
+                map[obj.id] = obj;
+                return map;
+            }, {});
+
+        return projects;
+    }
+
+    async function getUsers() {
+        const users = (await serverProxy.users.getUsers())
+            .map((userData) => new User(userData))
+            .reduce((map, obj) => {
+                map[obj.id] = obj;
+                return map;
+            }, {});
+
+        return users;
+    }
 
     function attachUsers(task, users) {
-        if (task.assignee !== null) {
-            [task.assignee] = users.filter((user) => user.id === task.assignee);
-        }
+        task.assignee = users[task.assignee] || null;
 
         for (const segment of task.segments) {
             for (const job of segment.jobs) {
-                if (job.assignee !== null) {
-                    [job.assignee] = users.filter((user) => user.id === job.assignee);
-                }
+                job.assignee = users[job.assignee] || null;
             }
         }
 
-        if (task.owner !== null) {
-            [task.owner] = users.filter((user) => user.id === task.owner);
-        }
+        task.owner = users[task.owner] || null;
 
         return task;
     }
@@ -147,7 +168,11 @@
             // If task was found by its id, then create task instance and get Job instance from it
             if (tasks !== null && tasks.length) {
                 const users = (await serverProxy.users.getUsers())
-                    .map((userData) => new User(userData));
+                    .map((userData) => new User(userData))
+                    .reduce((map, obj) => {
+                        map[obj.id] = obj;
+                        return obj;
+                    }, {});
                 const task = new Task(attachUsers(tasks[0], users));
 
                 return filter.jobID ? task.jobs
@@ -192,12 +217,15 @@
                 }
             }
 
-            const users = (await serverProxy.users.getUsers())
-                .map((userData) => new User(userData));
+            const users = await getUsers();
+            const projects = await getProjects(users);
             const tasksData = await serverProxy.tasks.getTasks(searchParams.toString());
             const tasks = tasksData
                 .map((task) => attachUsers(task, users))
-                .map((task) => new Task(task));
+                .map((task) => {
+                    task.project = projects[task.project] || null;
+                    return task;
+                }).map((task) => new Task(task));
 
 
             tasks.count = tasksData.count;
@@ -239,21 +267,15 @@
                 }
             }
 
-            const data = await serverProxy.projects.get(searchParams.toString());
-            const users = (await serverProxy.users.getUsers())
-                .map((userData) => new User(userData));
-            data.forEach((el) => {
-                if (el.owner !== null) {
-                    [el.owner] = users.filter((user) => user.id === el.owner);
-                }
-
-                if (el.assignee !== null) {
-                    [el.assignee] = users.filter((user) => user.id === el.assignee);
-                }
-            });
-
-            const projects = data.map((entry) => new Project(entry));
-            projects.count = data.count;
+            const users = await getUsers();
+            const projectsData = await serverProxy.projects.get(searchParams.toString());
+            const projects = projectsData
+                .map((item) => {
+                    item.owner = users[item.owner] || null;
+                    item.assignee = users[item.assignee] || null;
+                    return item;
+                }).map((item) => new Project(item));
+            projects.count = projectsData.count;
 
             return projects;
         };
