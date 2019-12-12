@@ -17,7 +17,8 @@ function build() {
     const User = require('./user');
     const ObjectState = require('./object-state');
     const Statistics = require('./statistics');
-    const { Job, Task, Project } = require('./session');
+    const { Job, Task } = require('./session');
+    const Project = require('./project');
     const { Attribute, Label } = require('./labels');
 
     const {

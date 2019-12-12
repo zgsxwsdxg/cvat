@@ -18,7 +18,7 @@ jest.mock('../../src/server-proxy', () => {
 // Initialize api
 window.cvat = require('../../src/api');
 
-const { Project } = require('../../src/session');
+const Project = require('../../src/project');
 
 
 // Test cases
