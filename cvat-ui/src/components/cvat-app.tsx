@@ -264,9 +264,9 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
                             <HeaderContainer> </HeaderContainer>
                             <Layout.Content>
                                 <Switch>
-                                    <Route exact path='/projects' component={ProjectListPage}/>
-                                    <Route path='/projects/create' component={NewProjectPage}/>
-                                    <Route path='/projects/:id' component={ProjectItemPage}/>
+                                    <Route exact path='/projects' component={ProjectListPage} />
+                                    <Route path='/projects/create' component={NewProjectPage} />
+                                    <Route path='/projects/:id' component={ProjectItemPage} />
 
                                     <Route exact path='/tasks' component={TasksPageContainer} />
                                     <Route path='/tasks/create' component={CreateTaskPageContainer} />
