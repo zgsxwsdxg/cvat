@@ -4,4 +4,6 @@
 /yarn.lock
 /node_modules
 /dist
+/build
+/yarn.lock
 
