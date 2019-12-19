@@ -1,4 +1,4 @@
-import { ErrorInfo } from './common';
+import { ErrorInfo, Status } from './common';
 
 export interface SearchQuery {
     page: number;
@@ -12,8 +12,7 @@ export interface SearchQuery {
 }
 
 export interface State {
-    isInitialized: boolean;
+    status: Status;
     error: ErrorInfo | null;
     projects: any[]; // cvat-core instances
-    query: SearchQuery | null;
 }

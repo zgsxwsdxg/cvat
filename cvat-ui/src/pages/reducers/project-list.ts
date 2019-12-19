@@ -5,32 +5,39 @@ import {
     FETCH_PROJECTS_FAILURE,
 } from '../actions/project-list';
 
-import { State } from '../types/project-list';
+import {
+    State,
+} from '../types/project-list';
+
+import {
+    Status,
+} from '../types/common';
+
 
 const defaultState: State = {
-    isInitialized: false,
+    status: Status.INIT,
     error: null,
     projects: [],
-    query: null,
 };
 
 export default (state: State = defaultState, action: AnyAction): State => {
     switch (action.type) {
         case FETCH_PROJECTS_REQUEST:
-            return defaultState;
+            return {
+                ...defaultState,
+                status: Status.BUSY,
+            };
         case FETCH_PROJECTS_SUCCESS: {
             return {
-                isInitialized: true,
+                status: Status.DONE,
                 error: null,
                 projects: [...action.payload.projects],
-                query: { ...action.payload.query },
             };
         }
         case FETCH_PROJECTS_FAILURE:
             return {
-                isInitialized: true,
+                status: Status.DONE,
                 projects: [],
-                query: { ...action.payload.query },
                 error: {
                     title: 'Error',
                     message: action.payload.error,
