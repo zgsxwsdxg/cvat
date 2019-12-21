@@ -1354,11 +1354,12 @@
         return result;
     };
 
-    Task.prototype.save.implementation = async function saveTaskImplementation(onUpdate) {
+    Task.prototype.save.implementation = async function (onUpdate) {
         // TODO: Add ability to change an owner and an assignee
         if (typeof (this.id) !== 'undefined') {
             // If the task has been already created, we update it
             const taskData = {
+                project: this.project ? this.project.id : null,
                 assignee: this.assignee ? this.assignee.id : null,
                 name: this.name,
                 bug_tracker: this.bugTracker,

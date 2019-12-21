@@ -7,9 +7,9 @@ import {
 const { Option } = Select;
 
 interface Props {
-    value: string | null;
+    value: number;
     projects: any[];
-    onChange: (project: string) => void;
+    onChange: (id: number) => void;
 }
 
 export default function ProjectSelector(props: Props): JSX.Element {
@@ -21,20 +21,19 @@ export default function ProjectSelector(props: Props): JSX.Element {
 
     return (
         <Select
-            defaultValue={value || '—'}
-            size='small'
+            defaultValue={value !== -1 ? value : undefined}
             showSearch
-            className='cvat-project-selector'
+            allowClear
+            placeholder='No project'
+            optionFilterProp='children'
+            style={{ width: 200 }}
             onChange={onChange}
         >
-
-            <Option key='-1' value='—'>—</Option>
             { projects.map((item): JSX.Element => (
-                <Option key={item.id} value={`#${item.id}: ${item.name}`}>
-                    {`#${item.id}: ${item.name}`}
+                <Option key={item.id} value={item.id}>
+                    { item.name }
                 </Option>
             ))}
         </Select>
-
     );
 }

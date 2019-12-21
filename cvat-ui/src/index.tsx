@@ -11,6 +11,9 @@ import { authorizedAsync } from './actions/auth-actions';
 import { getFormatsAsync } from './actions/formats-actions';
 import { checkPluginsAsync } from './actions/plugins-actions';
 import { getUsersAsync } from './actions/users-actions';
+import { fetchProjectsRequestThunk } from './pages/actions/project-list';
+import { Status } from './pages/types/common';
+
 import {
     resetErrors,
     resetMessages,
@@ -37,10 +40,13 @@ interface StateToProps {
     installedTFAnnotation: boolean;
     notifications: NotificationsState;
     user: any;
+    projectsInitialized: boolean;
+    projectsFetching: boolean;
 }
 
 interface DispatchToProps {
     loadFormats: () => void;
+    loadProjects: () => void;
     verifyAuthorized: () => void;
     loadUsers: () => void;
     initPlugins: () => void;
@@ -53,6 +59,7 @@ function mapStateToProps(state: CombinedState): StateToProps {
     const { auth } = state;
     const { formats } = state;
     const { users } = state;
+    const { projects } = state;
 
     return {
         userInitialized: auth.initialized,
@@ -67,11 +74,14 @@ function mapStateToProps(state: CombinedState): StateToProps {
         installedTFAnnotation: plugins.plugins.TF_ANNOTATION,
         notifications: { ...state.notifications },
         user: auth.user,
+        projectsInitialized: projects.status === Status.DONE,
+        projectsFetching: projects.status === Status.BUSY,
     };
 }
 
 function mapDispatchToProps(dispatch: any): DispatchToProps {
     return {
+        loadProjects: (): void => dispatch(fetchProjectsRequestThunk(null)),
         loadFormats: (): void => dispatch(getFormatsAsync()),
         verifyAuthorized: (): void => dispatch(authorizedAsync()),
         initPlugins: (): void => dispatch(checkPluginsAsync()),

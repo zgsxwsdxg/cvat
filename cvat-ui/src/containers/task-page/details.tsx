@@ -15,6 +15,7 @@ interface OwnProps {
 interface StateToProps {
     registeredUsers: any[];
     installedGit: boolean;
+    projects: any[];
 }
 
 interface DispatchToProps {
@@ -27,6 +28,7 @@ function mapStateToProps(state: CombinedState): StateToProps {
     return {
         registeredUsers: state.users.users,
         installedGit: plugins.GIT_INTEGRATION,
+        projects: state.projects.projects,
     };
 }
 
@@ -44,6 +46,7 @@ function TaskPageContainer(props: StateToProps & DispatchToProps & OwnProps): JS
         installedGit,
         registeredUsers,
         onTaskUpdate,
+        projects,
     } = props;
 
     return (
@@ -52,6 +55,7 @@ function TaskPageContainer(props: StateToProps & DispatchToProps & OwnProps): JS
             taskInstance={task.instance}
             installedGit={installedGit}
             onTaskUpdate={onTaskUpdate}
+            projects={projects}
             registeredUsers={registeredUsers}
         />
     );

@@ -16,6 +16,7 @@ import Title from 'antd/lib/typography/Title';
 import moment from 'moment';
 
 import UserSelector from './user-selector';
+import ProjectSelector from '../../pages/components/project-selector';
 import LabelsEditorComponent from '../labels-editor/labels-editor';
 import getCore from '../../core';
 import patterns from '../../utils/validation-patterns';
@@ -28,6 +29,7 @@ interface Props {
     taskInstance: any;
     installedGit: boolean; // change to git repos url
     registeredUsers: any[];
+    projects: any[];
     onTaskUpdate: (taskInstance: any) => void;
 }
 
@@ -173,6 +175,35 @@ export default class DetailsComponent extends React.PureComponent<Props, State> 
                     </Col>
                 </Row>
             </>
+        );
+    }
+
+    private renderSelectProject(): JSX.Element {
+        const {
+            taskInstance,
+            projects,
+            onTaskUpdate,
+        } = this.props;
+
+        const { project } = taskInstance;
+        return (
+            <Row type='flex' justify='start' align='middle'>
+                <Col style={{ width: 60 }}>
+                    <Text strong>Project</Text>
+                </Col>
+                <Col>
+                    <ProjectSelector
+                        value={project ? project.id : -1}
+                        projects={projects}
+                        onChange={
+                            (id: number): void => {
+                                taskInstance.project = projects[id] || null;
+                                onTaskUpdate(taskInstance);
+                            }
+                        }
+                    />
+                </Col>
+            </Row>
         );
     }
 
@@ -410,6 +441,7 @@ export default class DetailsComponent extends React.PureComponent<Props, State> 
                     </Col>
                     <Col md={16} lg={17} xl={17} xxl={18}>
                         { this.renderUsers() }
+                        { this.renderSelectProject() }
                         { this.renderBugTracker() }
                         { this.renderDatasetRepository() }
                         { this.renderLabelsEditor() }

@@ -31,10 +31,13 @@ import { NotificationsState } from '../reducers/interfaces';
 type CVATAppProps = {
     loadFormats: () => void;
     loadUsers: () => void;
+    loadProjects: () => void;
     verifyAuthorized: () => void;
     initPlugins: () => void;
     resetErrors: () => void;
     resetMessages: () => void;
+    projectsInitialized: boolean;
+    projectsFetching: boolean;
     userInitialized: boolean;
     pluginsInitialized: boolean;
     pluginsFetching: boolean;
@@ -59,6 +62,7 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
         const {
             loadFormats,
             loadUsers,
+            loadProjects,
             initPlugins,
             userInitialized,
             formatsInitialized,
@@ -68,6 +72,8 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
             pluginsInitialized,
             pluginsFetching,
             user,
+            projectsInitialized,
+            projectsFetching,
         } = this.props;
 
         this.showErrors();
@@ -88,6 +94,10 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
 
         if (!pluginsInitialized && !pluginsFetching) {
             initPlugins();
+        }
+
+        if (!projectsInitialized && !projectsFetching) {
+            loadProjects();
         }
     }
 
@@ -244,12 +254,14 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
             installedAutoAnnotation,
             installedTFSegmentation,
             installedTFAnnotation,
+            projectsInitialized,
             user,
         } = this.props;
 
         const readyForRender = (userInitialized && user == null)
             || (userInitialized && formatsInitialized
-            && pluginsInitialized && usersInitialized);
+            && pluginsInitialized && usersInitialized
+            && projectsInitialized);
 
         const withModels = installedAutoAnnotation
             || installedTFAnnotation || installedTFSegmentation;

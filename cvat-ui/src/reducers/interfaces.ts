@@ -1,3 +1,5 @@
+import { State as ProjectsState } from '../pages/types/project-list';
+
 export interface AuthState {
     initialized: boolean;
     fetching: boolean;
@@ -205,5 +207,6 @@ export interface CombinedState {
     formats: FormatsState;
     plugins: PluginsState;
     models: ModelsState;
+    projects: ProjectsState;
     notifications: NotificationsState;
 }

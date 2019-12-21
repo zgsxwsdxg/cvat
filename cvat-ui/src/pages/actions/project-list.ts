@@ -41,14 +41,14 @@ function fetchProjectsFailure(error: any): AnyAction {
     return action;
 }
 
-export function fetchProjectsRequestThunk(query: SearchQuery):
+export function fetchProjectsRequestThunk(query: SearchQuery | null):
 ThunkAction<Promise<void>, {}, {}, AnyAction> {
     return async (dispatch: ActionCreator<Dispatch>): Promise<void> => {
         dispatch(fetchProjectsRequest());
 
         let result = null;
         try {
-            result = await cvat.projects.get(query);
+            result = await cvat.projects.get(query || {});
         } catch (error) {
             dispatch(fetchProjectsFailure(error));
             return;
