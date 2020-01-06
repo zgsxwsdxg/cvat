@@ -1,0 +1,25 @@
+@import '../../base.scss';
+
+/* empty-tasks icon */
+.cvat-empty-project-list {
+    > div:nth-child(1) {
+        margin-top: 50px;
+    }
+
+    > div:nth-child(2) {
+        > div {
+            margin-top: 20px;
+
+            /* No projects created yet */
+            > span {
+                font-size: 20px;
+                color: $text-color;
+            }
+        }
+    }
+
+    /* To get started with your annotation project .. */
+    > div:nth-child(3) {
+        margin-top: 10px;
+    }
+}

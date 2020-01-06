@@ -2,6 +2,8 @@ import React from 'react';
 import { SearchQuery } from './types/project-list';
 import { fetchProjectsRequestThunk } from './actions/project-list';
 import { connect } from 'react-redux';
+import EmptyProjectList from './components/empty-project-list';
+import './styles/project-list.scss';
 
 interface StateToProps {
     isInitialized: boolean;
@@ -35,14 +37,14 @@ function mapStateToProps(state: any): StateToProps {
 function dispatchToProps(dispatch: any): DispatchToProps {
     return {
         fetchProjects: (query: SearchQuery) => {
-            fetchProjectsRequestThunk(query)
-        }
-    }
+            fetchProjectsRequestThunk(query);
+        },
+    };
 }
 
 function ProjectListPage(props: StateToProps & DispatchToProps) {
     return (
-        <h1>project-list page</h1>
+        <EmptyProjectList />
     );
 }
 

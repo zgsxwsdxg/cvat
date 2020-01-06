@@ -80,7 +80,7 @@ class TaskItemComponent extends React.PureComponent<TaskItemProps & RouteCompone
             (job: any): boolean => job.status === 'completed',
         ).length;
 
-        // Progress appearence depends on number of jobs
+        // Progress appearance depends on number of jobs
         let progressColor = null;
         let progressText = null;
         if (numOfCompleted === numOfJobs) {

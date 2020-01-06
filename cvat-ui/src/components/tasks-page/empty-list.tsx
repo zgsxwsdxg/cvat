@@ -15,7 +15,7 @@ export default function EmptyListComponent(): JSX.Element {
         <div className='cvat-empty-tasks-list'>
             <Row type='flex' justify='center' align='middle'>
                 <Col>
-                    <Icon className='cvat-empty-tasks-icon' component={EmptyTasksIcon} />
+                    <Icon component={EmptyTasksIcon} />
                 </Col>
             </Row>
             <Row type='flex' justify='center' align='middle'>

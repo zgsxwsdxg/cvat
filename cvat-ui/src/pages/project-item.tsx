@@ -1,12 +1,10 @@
 import React from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 interface StateToProps {
-
 }
 
 interface DispatchToProps {
-
 }
 
 function mapStateToProps(state: any): StateToProps {
@@ -14,7 +12,8 @@ function mapStateToProps(state: any): StateToProps {
 }
 
 function dispatchToProps(dispatch: any): DispatchToProps {
-    return {};
+    return {
+    };
 }
 
 function ProjectItemPage(props: StateToProps & DispatchToProps) {

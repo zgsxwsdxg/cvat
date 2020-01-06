@@ -8,17 +8,17 @@ import {
     Icon,
 } from 'antd';
 
-function EmptyProjectListIcon() {
-    return <img src='/assets/empty-project-list.svg'/>;
+function EmptyProjectListIcon(): JSX.Element {
+    return <img src='/assets/empty-project-list.svg' alt='No projects' />;
 }
 
 // TODO: define CSS classes
-export default function EmptyProjectList() {
+export default function EmptyProjectList(): JSX.Element {
     return (
         <div className='cvat-empty-project-list'>
             <Row type='flex' justify='center' align='middle'>
                 <Col>
-                    <Icon className='cvat-empty-project-list-icon' component={EmptyProjectListIcon}/>
+                    <Icon component={EmptyProjectListIcon} />
                 </Col>
             </Row>
             <Row type='flex' justify='center' align='middle'>
@@ -31,11 +31,11 @@ export default function EmptyProjectList() {
                     <Text type='secondary'> To get started with your annotation project </Text>
                 </Col>
             </Row>
-            <Row  type='flex' justify='center' align='middle'>
+            <Row type='flex' justify='center' align='middle'>
                 <Col>
                     <Link to='/projects/create'> create a new project </Link>
                 </Col>
             </Row>
         </div>
-    )
+    );
 }
