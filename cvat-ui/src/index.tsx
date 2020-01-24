@@ -5,7 +5,7 @@ import { connect, Provider } from 'react-redux';
 import CVATApplication from './components/cvat-app';
 
 import createRootReducer from './reducers/root-reducer';
-import createCVATStore, { getCVATStore } from './store';
+import createCVATStore, { getCVATStore } from './cvat-store';
 
 import { authorizedAsync } from './actions/auth-actions';
 import { getFormatsAsync } from './actions/formats-actions';
@@ -14,6 +14,7 @@ import { getUsersAsync } from './actions/users-actions';
 import { fetchProjectsRequestThunk } from './pages/actions/project-list';
 import { Status } from './pages/types/common';
 
+import { getAboutAsync } from './actions/about-actions';
 import {
     resetErrors,
     resetMessages,
@@ -33,6 +34,8 @@ interface StateToProps {
     userInitialized: boolean;
     usersInitialized: boolean;
     usersFetching: boolean;
+    aboutInitialized: boolean;
+    aboutFetching: boolean;
     formatsInitialized: boolean;
     formatsFetching: boolean;
     installedAutoAnnotation: boolean;
@@ -49,6 +52,7 @@ interface DispatchToProps {
     loadProjects: () => void;
     verifyAuthorized: () => void;
     loadUsers: () => void;
+    loadAbout: () => void;
     initPlugins: () => void;
     resetErrors: () => void;
     resetMessages: () => void;
@@ -60,6 +64,7 @@ function mapStateToProps(state: CombinedState): StateToProps {
     const { formats } = state;
     const { users } = state;
     const { projects } = state;
+    const { about } = state;
 
     return {
         userInitialized: auth.initialized,
@@ -67,6 +72,8 @@ function mapStateToProps(state: CombinedState): StateToProps {
         pluginsFetching: plugins.fetching,
         usersInitialized: users.initialized,
         usersFetching: users.fetching,
+        aboutInitialized: about.initialized,
+        aboutFetching: about.fetching,
         formatsInitialized: formats.initialized,
         formatsFetching: formats.fetching,
         installedAutoAnnotation: plugins.plugins.AUTO_ANNOTATION,
@@ -76,6 +83,7 @@ function mapStateToProps(state: CombinedState): StateToProps {
         user: auth.user,
         projectsInitialized: projects.status === Status.DONE,
         projectsFetching: projects.status === Status.BUSY,
+        about: state.about,
     };
 }
 
@@ -86,6 +94,7 @@ function mapDispatchToProps(dispatch: any): DispatchToProps {
         verifyAuthorized: (): void => dispatch(authorizedAsync()),
         initPlugins: (): void => dispatch(checkPluginsAsync()),
         loadUsers: (): void => dispatch(getUsersAsync()),
+        loadAbout: (): void => dispatch(getAboutAsync()),
         resetErrors: (): void => dispatch(resetErrors()),
         resetMessages: (): void => dispatch(resetMessages()),
     };

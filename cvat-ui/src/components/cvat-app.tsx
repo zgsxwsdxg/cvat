@@ -13,25 +13,26 @@ import {
     notification,
 } from 'antd';
 
-import TasksPageContainer from '../containers/tasks-page/tasks-page';
+import SettingsPageComponent from 'components/settings-page/settings-page';
+import TasksPageContainer from 'containers/tasks-page/tasks-page';
+import CreateTaskPageContainer from 'containers/create-task-page/create-task-page';
+import TaskPageContainer from 'containers/task-page/task-page';
+import ModelsPageContainer from 'containers/models-page/models-page';
+import CreateModelPageContainer from 'containers/create-model-page/create-model-page';
+import AnnotationPageContainer from 'containers/annotation-page/annotation-page';
+import LoginPageContainer from 'containers/login-page/login-page';
+import RegisterPageContainer from 'containers/register-page/register-page';
+import HeaderContainer from 'containers/header/header';
 import ProjectListPage from '../pages/project-list';
 import NewProjectPage from '../pages/new-project';
 import ProjectItemPage from '../pages/project-item';
-import CreateTaskPageContainer from '../containers/create-task-page/create-task-page';
-import TaskPageContainer from '../containers/task-page/task-page';
-import ModelsPageContainer from '../containers/models-page/models-page';
-import CreateModelPageContainer from '../containers/create-model-page/create-model-page';
-import AnnotationPageContainer from '../containers/annotation-page/annotation-page';
-import LoginPageContainer from '../containers/login-page/login-page';
-import RegisterPageContainer from '../containers/register-page/register-page';
-import HeaderContainer from '../containers/header/header';
-
-import { NotificationsState } from '../reducers/interfaces';
+import { NotificationsState } from 'reducers/interfaces';
 
 type CVATAppProps = {
     loadFormats: () => void;
     loadUsers: () => void;
     loadProjects: () => void;
+    loadAbout: () => void;
     verifyAuthorized: () => void;
     initPlugins: () => void;
     resetErrors: () => void;
@@ -45,6 +46,8 @@ type CVATAppProps = {
     formatsFetching: boolean;
     usersInitialized: boolean;
     usersFetching: boolean;
+    aboutInitialized: boolean;
+    aboutFetching: boolean;
     installedAutoAnnotation: boolean;
     installedTFAnnotation: boolean;
     installedTFSegmentation: boolean;
@@ -63,12 +66,15 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
             loadFormats,
             loadUsers,
             loadProjects,
+            loadAbout,
             initPlugins,
             userInitialized,
             formatsInitialized,
             formatsFetching,
             usersInitialized,
             usersFetching,
+            aboutInitialized,
+            aboutFetching,
             pluginsInitialized,
             pluginsFetching,
             user,
@@ -90,6 +96,10 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
 
         if (!usersInitialized && !usersFetching) {
             loadUsers();
+        }
+
+        if (!aboutInitialized && !aboutFetching) {
+            loadAbout();
         }
 
         if (!pluginsInitialized && !pluginsFetching) {
@@ -165,15 +175,18 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
         const { tasks } = notifications.errors;
         const { formats } = notifications.errors;
         const { users } = notifications.errors;
+        const { about } = notifications.errors;
         const { share } = notifications.errors;
         const { models } = notifications.errors;
+        const { annotation } = notifications.errors;
 
         const shown = !!auth.authorized || !!auth.login || !!auth.logout || !!auth.register
             || !!tasks.fetching || !!tasks.updating || !!tasks.dumping || !!tasks.loading
             || !!tasks.exporting || !!tasks.deleting || !!tasks.creating || !!formats.fetching
-            || !!users.fetching || !!share.fetching || !!models.creating || !!models.starting
+            || !!users.fetching || !!about.fetching || !!share.fetching || !!models.creating || !!models.starting
             || !!models.fetching || !!models.deleting || !!models.inferenceStatusFetching
-            || !!models.metaFetching;
+            || !!models.metaFetching || !!annotation.frameFetching || !!annotation.saving
+            || !!annotation.jobFetching;
 
         if (auth.authorized) {
             showError(auth.authorized.message, auth.authorized.reason);
@@ -214,6 +227,9 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
         if (users.fetching) {
             showError(users.fetching.message, users.fetching.reason);
         }
+        if (about.fetching) {
+            showError(about.fetching.message, about.fetching.reason);
+        }
         if (share.fetching) {
             showError(share.fetching.message, share.fetching.reason);
         }
@@ -238,6 +254,15 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
                 models.inferenceStatusFetching.reason,
             );
         }
+        if (annotation.jobFetching) {
+            showError(annotation.jobFetching.message, annotation.jobFetching.reason);
+        }
+        if (annotation.frameFetching) {
+            showError(annotation.frameFetching.message, annotation.frameFetching.reason);
+        }
+        if (annotation.saving) {
+            showError(annotation.saving.message, annotation.saving.reason);
+        }
 
         if (shown) {
             resetErrors();
@@ -249,6 +274,7 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
         const {
             userInitialized,
             usersInitialized,
+            aboutInitialized,
             pluginsInitialized,
             formatsInitialized,
             installedAutoAnnotation,
@@ -261,7 +287,7 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
         const readyForRender = (userInitialized && user == null)
             || (userInitialized && formatsInitialized
             && pluginsInitialized && usersInitialized
-            && projectsInitialized);
+            && projectsInitialized && aboutInitialized);
 
         const withModels = installedAutoAnnotation
             || installedTFAnnotation || installedTFSegmentation;
@@ -277,7 +303,7 @@ export default class CVATApplication extends React.PureComponent<CVATAppProps> {
                                     <Route exact path='/projects' component={ProjectListPage} />
                                     <Route path='/projects/create' component={NewProjectPage} />
                                     <Route path='/projects/:id' component={ProjectItemPage} />
-
+                                    <Route exact path='/settings' component={SettingsPageComponent} />
                                     <Route exact path='/tasks' component={TasksPageContainer} />
                                     <Route exact path='/tasks/create' component={CreateTaskPageContainer} />
                                     <Route exact path='/tasks/:id' component={TaskPageContainer} />

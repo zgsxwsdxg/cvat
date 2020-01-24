@@ -15,12 +15,12 @@ import Title from 'antd/lib/typography/Title';
 
 import moment from 'moment';
 
+import getCore from 'cvat-core';
+import patterns from 'utils/validation-patterns';
+import { getReposData, syncRepos } from 'utils/git-utils';
 import UserSelector from './user-selector';
 import ProjectSelector from '../../pages/components/project-selector';
 import LabelsEditorComponent from '../labels-editor/labels-editor';
-import getCore from '../../core';
-import patterns from '../../utils/validation-patterns';
-import { getReposData, syncRepos } from '../../utils/git-utils';
 
 const core = getCore();
 

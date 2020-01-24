@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { TreeNodeNormal } from 'antd/lib/tree/Tree';
-import FileManagerComponent, { Files } from '../../components/file-manager/file-manager';
+import FileManagerComponent, { Files } from 'components/file-manager/file-manager';
 
-import { loadShareDataAsync } from '../../actions/share-actions';
+import { loadShareDataAsync } from 'actions/share-actions';
 import {
     ShareItem,
     CombinedState,
-} from '../../reducers/interfaces';
+} from 'reducers/interfaces';
 
 interface OwnProps {
     ref: any;
@@ -26,11 +26,12 @@ interface DispatchToProps {
 function mapStateToProps(state: CombinedState): StateToProps {
     function convert(items: ShareItem[], path?: string): TreeNodeNormal[] {
         return items.map((item): TreeNodeNormal => {
-            const key = `${path}${item.name}/`;
+            const isLeaf = item.type !== 'DIR';
+            const key = `${path}${item.name}${isLeaf ? '' : '/'}`;
             return {
                 key,
+                isLeaf,
                 title: item.name || 'root',
-                isLeaf: item.type !== 'DIR',
                 children: convert(item.children, key),
             };
         });

@@ -1,4 +1,9 @@
 import { State as ProjectsState } from '../pages/types/project-list';
+import { Canvas } from 'cvat-canvas';
+
+export type StringObject = {
+    [index: string]: string;
+};
 
 export interface AuthState {
     initialized: boolean;
@@ -90,6 +95,12 @@ export interface UsersState {
     initialized: boolean;
 }
 
+export interface AboutState {
+    about: any;
+    fetching: boolean;
+    initialized: boolean;
+}
+
 export interface ShareFileInfo { // get this data from cvat-core
     name: string;
     type: 'DIR' | 'REG';
@@ -177,6 +188,9 @@ export interface NotificationsState {
         users: {
             fetching: null | ErrorState;
         };
+        about: {
+            fetching: null | ErrorState;
+        };
         share: {
             fetching: null | ErrorState;
         };
@@ -187,6 +201,11 @@ export interface NotificationsState {
             fetching: null | ErrorState;
             metaFetching: null | ErrorState;
             inferenceStatusFetching: null | ErrorState;
+        };
+        annotation: {
+            saving: null | ErrorState;
+            jobFetching: null | ErrorState;
+            frameFetching: null | ErrorState;
         };
     };
     messages: {
@@ -199,14 +218,107 @@ export interface NotificationsState {
     };
 }
 
+export enum ActiveControl {
+    CURSOR = 'cursor',
+    DRAG_CANVAS = 'drag_canvas',
+    ZOOM_CANVAS = 'zoom_canvas',
+    DRAW_RECTANGLE = 'draw_rectangle',
+    DRAW_POLYGON = 'draw_polygon',
+    DRAW_POLYLINE = 'draw_polyline',
+    DRAW_POINTS = 'draw_points',
+    MERGE = 'merge',
+    GROUP = 'group',
+    SPLIT = 'split',
+}
+
+export enum ShapeType {
+    RECTANGLE = 'rectangle',
+    POLYGON = 'polygon',
+    POLYLINE = 'polyline',
+    POINTS = 'points',
+}
+
+export enum ObjectType {
+    SHAPE = 'shape',
+    TRACK = 'track',
+    TAG = 'tag',
+}
+
+export interface AnnotationState {
+    canvasInstance: Canvas;
+    canvasIsReady: boolean;
+    activeControl: ActiveControl;
+    jobInstance: any | null | undefined;
+    frameData: any | null;
+    frame: number;
+    playing: boolean;
+    annotations: any[];
+    saving: boolean;
+    savingStatuses: string[];
+    jobFetching: boolean;
+    dataFetching: boolean;
+    drawing: {
+        activeShapeType: ShapeType;
+        activeNumOfPoints?: number;
+        activeLabelID: number;
+        activeObjectType: ObjectType;
+    };
+}
+
+export enum GridColor {
+    White = 'White',
+    Black = 'Black',
+    Red = 'Red',
+    Green = 'Green',
+    Blue = 'Blue',
+}
+
+export enum FrameSpeed {
+    Fastest = 100,
+    Fast = 50,
+    Usual = 25,
+    Slow = 15,
+    Slower = 12,
+    Slowest = 1,
+}
+
+export interface PlayerSettingsState {
+    frameStep: number;
+    frameSpeed: FrameSpeed;
+    resetZoom: boolean;
+    rotateAll: boolean;
+    grid: boolean;
+    gridSize: number;
+    gridColor: GridColor;
+    gridOpacity: number; // in %
+    brightnessLevel: number;
+    contrastLevel: number;
+    saturationLevel: number;
+}
+
+export interface WorkspaceSettingsState {
+    autoSave: boolean;
+    autoSaveInterval: number; // in ms
+    aamZoomMargin: number;
+    showAllInterpolationTracks: boolean;
+}
+
+export interface SettingsState {
+    workspace: WorkspaceSettingsState;
+    player: PlayerSettingsState;
+}
+
 export interface CombinedState {
     auth: AuthState;
     tasks: TasksState;
     users: UsersState;
+    about: AboutState;
     share: ShareState;
     formats: FormatsState;
     plugins: PluginsState;
     models: ModelsState;
     projects: ProjectsState;
     notifications: NotificationsState;
+    annotation: AnnotationState;
+    settings: SettingsState;
 }
