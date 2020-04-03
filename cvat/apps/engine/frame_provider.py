@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
+import itertools
 import math
 from enum import Enum
 from io import BytesIO
@@ -108,7 +109,7 @@ class FrameProvider:
 
         chunk_reader = self._loaders[quality].load(chunk_number)
 
-        frame, frame_name = chunk_reader[frame_offset]
+        frame, frame_name = next(itertools.islice(chunk_reader, frame_offset, None))
         if self._loaders[quality].reader_class is VideoReader:
             return (self._av_frame_to_png_bytes(frame), 'image/png')
         return (frame, mimetypes.guess_type(frame_name))
