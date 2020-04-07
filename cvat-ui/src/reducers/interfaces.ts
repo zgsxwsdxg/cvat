@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { ExtendedKeyMapOptions } from 'react-hotkeys';
 import { Canvas, RectDrawingMethod } from 'cvat-canvas';
 
 export type StringObject = {
@@ -425,6 +426,7 @@ export interface WorkspaceSettingsState {
     autoSave: boolean;
     autoSaveInterval: number; // in ms
     aamZoomMargin: number;
+    showObjectsTextAlways: boolean;
     showAllInterpolationTracks: boolean;
 }
 
@@ -433,6 +435,7 @@ export interface ShapesSettingsState {
     opacity: number;
     selectedOpacity: number;
     blackBorders: boolean;
+    showBitmap: boolean;
 }
 
 export interface SettingsState {
@@ -443,6 +446,8 @@ export interface SettingsState {
 
 export interface ShortcutsState {
     visibleShortcutsHelp: boolean;
+    keyMap: Record<string, ExtendedKeyMapOptions>;
+    normalizedKeyMap: Record<string, string>;
 }
 
 export interface CombinedState {

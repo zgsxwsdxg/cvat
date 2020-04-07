@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import React from 'react';
-import { GlobalHotKeys, KeyMap } from 'react-hotkeys';
+import { GlobalHotKeys, ExtendedKeyMapOptions } from 'react-hotkeys';
 
 import Tooltip from 'antd/lib/tooltip';
 import Icon from 'antd/lib/icon';
@@ -21,6 +21,7 @@ import {
 import { LogType } from 'cvat-logger';
 import { Canvas } from 'cvat-canvas';
 import getCore from 'cvat-core';
+import consts from 'consts';
 
 const cvat = getCore();
 
@@ -42,6 +43,7 @@ interface Props {
     colorBy: ColorBy;
     selectedOpacity: number;
     blackBorders: boolean;
+    showBitmap: boolean;
     grid: boolean;
     gridSize: number;
     gridColor: GridColor;
@@ -58,7 +60,9 @@ interface Props {
     contextVisible: boolean;
     contextType: ContextMenuType;
     aamZoomMargin: number;
+    showObjectsTextAlways: boolean;
     workspace: Workspace;
+    keyMap: Record<string, ExtendedKeyMapOptions>;
     onSetupCanvas: () => void;
     onDragCanvas: (enabled: boolean) => void;
     onZoomCanvas: (enabled: boolean) => void;
@@ -90,6 +94,7 @@ interface Props {
 export default class CanvasWrapperComponent extends React.PureComponent<Props> {
     public componentDidMount(): void {
         const {
+            showObjectsTextAlways,
             canvasInstance,
             curZLayer,
         } = this.props;
@@ -100,7 +105,12 @@ export default class CanvasWrapperComponent extends React.PureComponent<Props> {
             .getElementsByClassName('cvat-canvas-container');
         wrapper.appendChild(canvasInstance.html());
 
+        canvasInstance.configure({
+            undefinedAttrValue: consts.UNDEFINED_ATTRIBUTE_VALUE,
+            displayAllText: showObjectsTextAlways,
+        });
         canvasInstance.setZLayer(curZLayer);
+
         this.initialSetup();
         this.updateCanvas();
     }
@@ -111,6 +121,7 @@ export default class CanvasWrapperComponent extends React.PureComponent<Props> {
             colorBy,
             selectedOpacity,
             blackBorders,
+            showBitmap,
             frameData,
             frameAngle,
             annotations,
@@ -127,7 +138,15 @@ export default class CanvasWrapperComponent extends React.PureComponent<Props> {
             saturationLevel,
             workspace,
             frameFetching,
+            showObjectsTextAlways,
         } = this.props;
+
+        if (prevProps.showObjectsTextAlways !== showObjectsTextAlways) {
+            canvasInstance.configure({
+                undefinedAttrValue: consts.UNDEFINED_ATTRIBUTE_VALUE,
+                displayAllText: showObjectsTextAlways,
+            });
+        }
 
         if (prevProps.sidebarCollapsed !== sidebarCollapsed) {
             const [sidebar] = window.document.getElementsByClassName('cvat-objects-sidebar');
@@ -195,6 +214,10 @@ export default class CanvasWrapperComponent extends React.PureComponent<Props> {
         if (prevProps.opacity !== opacity || prevProps.blackBorders !== blackBorders
             || prevProps.selectedOpacity !== selectedOpacity || prevProps.colorBy !== colorBy) {
             this.updateShapesView();
+        }
+
+        if (prevProps.showBitmap !== showBitmap) {
+            canvasInstance.bitmap(showBitmap);
         }
 
         if (prevProps.frameAngle !== frameAngle) {
@@ -556,6 +579,7 @@ export default class CanvasWrapperComponent extends React.PureComponent<Props> {
 
         for (const state of annotations) {
             let shapeColor = '';
+
             if (colorBy === ColorBy.INSTANCE) {
                 shapeColor = state.color;
             } else if (colorBy === ColorBy.GROUP) {
@@ -571,6 +595,7 @@ export default class CanvasWrapperComponent extends React.PureComponent<Props> {
                 if (handler && handler.nested) {
                     handler.nested.fill({ color: shapeColor });
                 }
+
                 (shapeView as any).instance.fill({ color: shapeColor, opacity: opacity / 100 });
                 (shapeView as any).instance.stroke({ color: blackBorders ? 'black' : shapeColor });
             }
@@ -683,6 +708,7 @@ export default class CanvasWrapperComponent extends React.PureComponent<Props> {
             onChangeGridColor,
             onChangeGridOpacity,
             onSwitchGrid,
+            keyMap,
         } = this.props;
 
         const preventDefault = (event: KeyboardEvent | undefined): void => {
@@ -691,61 +717,16 @@ export default class CanvasWrapperComponent extends React.PureComponent<Props> {
             }
         };
 
-        const keyMap = {
-            INCREASE_BRIGHTNESS: {
-                name: 'Brightness+',
-                description: 'Increase brightness level for the image',
-                sequence: 'shift+b+=',
-                action: 'keypress',
-            },
-            DECREASE_BRIGHTNESS: {
-                name: 'Brightness-',
-                description: 'Decrease brightness level for the image',
-                sequence: 'shift+b+-',
-                action: 'keydown',
-            },
-            INCREASE_CONTRAST: {
-                name: 'Contrast+',
-                description: 'Increase contrast level for the image',
-                sequence: 'shift+c+=',
-                action: 'keydown',
-            },
-            DECREASE_CONTRAST: {
-                name: 'Contrast-',
-                description: 'Decrease contrast level for the image',
-                sequence: 'shift+c+-',
-                action: 'keydown',
-            },
-            INCREASE_SATURATION: {
-                name: 'Saturation+',
-                description: 'Increase saturation level for the image',
-                sequence: 'shift+s+=',
-                action: 'keydown',
-            },
-            DECREASE_SATURATION: {
-                name: 'Saturation-',
-                description: 'Increase contrast level for the image',
-                sequence: 'shift+s+-',
-                action: 'keydown',
-            },
-            INCREASE_GRID_OPACITY: {
-                name: 'Grid opacity+',
-                description: 'Make the grid more visible',
-                sequence: 'shift+g+=',
-                action: 'keydown',
-            },
-            DECREASE_GRID_OPACITY: {
-                name: 'Grid opacity-',
-                description: 'Make the grid less visible',
-                sequences: 'shift+g+-',
-                action: 'keydown',
-            },
-            CHANGE_GRID_COLOR: {
-                name: 'Grid color',
-                description: 'Set another color for the image grid',
-                sequence: 'shift+g+enter',
-                action: 'keydown',
-            },
+        const subKeyMap = {
+            INCREASE_BRIGHTNESS: keyMap.INCREASE_BRIGHTNESS,
+            DECREASE_BRIGHTNESS: keyMap.DECREASE_BRIGHTNESS,
+            INCREASE_CONTRAST: keyMap.INCREASE_CONTRAST,
+            DECREASE_CONTRAST: keyMap.DECREASE_CONTRAST,
+            INCREASE_SATURATION: keyMap.INCREASE_SATURATION,
+            DECREASE_SATURATION: keyMap.DECREASE_SATURATION,
+            INCREASE_GRID_OPACITY: keyMap.INCREASE_GRID_OPACITY,
+            DECREASE_GRID_OPACITY: keyMap.DECREASE_GRID_OPACITY,
+            CHANGE_GRID_COLOR: keyMap.CHANGE_GRID_COLOR,
         };
 
         const step = 10;
@@ -826,7 +807,7 @@ export default class CanvasWrapperComponent extends React.PureComponent<Props> {
 
         return (
             <Layout.Content style={{ position: 'relative' }}>
-                <GlobalHotKeys keyMap={keyMap as any as KeyMap} handlers={handlers} allowChanges />
+                <GlobalHotKeys keyMap={subKeyMap} handlers={handlers} allowChanges />
                 {/*
                     This element doesn't have any props
                     So, React isn't going to rerender it

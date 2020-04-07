@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
+import itertools
 import math
 from enum import Enum
 from io import BytesIO
