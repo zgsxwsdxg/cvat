@@ -18,7 +18,6 @@ from .annotation import AnnotationIR, AnnotationManager
 from .bindings import TaskData
 from .formats import make_exporter, make_importer
 
-_FORMATS_DIR = osp.join(osp.dirname(__file__), 'formats')
 
 class dotdict(OrderedDict):
     """dot.notation access to dictionary attributes"""
